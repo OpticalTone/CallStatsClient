@@ -54,7 +54,13 @@ namespace CallStatsClient
             timer.Start();
 
             Debug.WriteLine("FabricSetup: ");
-            await FabricSetup();
+            string fabricStatus = await FabricSetup();
+
+            if (fabricStatus != "success")
+            {
+                Debug.WriteLine("FabricSetupFailed: ");
+                fabricStatus = await FabricSetupFailed();
+            }
 
             Debug.WriteLine("SSRCMap: ");
             await SSRCMap();
@@ -179,7 +185,7 @@ namespace CallStatsClient
 
         #region Fabric Events 
 
-        public async Task FabricSetup()
+        public async Task<string> FabricSetup()
         {
             string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/fabric/setup";
 
@@ -237,7 +243,31 @@ namespace CallStatsClient
                 iceCandidatePairs = iceCandidatePairsList
             };
 
-            await SendRequest(data, url);
+            string fabricContent = await SendRequest(data, url);
+
+            return DeserializeJson<FabricResponse>(fabricContent).status;
+        }
+
+        public async Task<string> FabricSetupFailed()
+        {
+            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/fabric/setupfailed";
+
+            object data = new
+            {
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                fabricTransmissionDirection = "sendrecv",
+                remoteEndpointType = "peer",
+                reason = "MediaConfigError",
+                name = "name",
+                stack = "stack"
+            };
+
+            string fabricContent = await SendRequest(data, url);
+
+            return DeserializeJson<FabricResponse>(fabricContent).status;
         }
 
         public async Task FabricTerminated()
