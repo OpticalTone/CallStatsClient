@@ -452,6 +452,26 @@ namespace CallStatsClient
             await SendRequest(data, url);
         }
 
+        public async Task SystemStatusStatsSubmission()
+        {
+            string url = $"https://stats.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/stats/system";
+
+            object data = new
+            {
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                cpuUsage = 5,
+                batteryLevel = 50,
+                memoryUsage = 2,
+                totalMemory = 100,
+                threadCount = 1
+            };
+
+            await SendRequest(data, url);
+        }
+
         #endregion
 
         #region Special Events
