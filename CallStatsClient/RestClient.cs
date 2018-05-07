@@ -43,7 +43,7 @@ namespace CallStatsClient
 
             confID = Config.localSettings.Values["confID"].ToString();
 
-            string confContent = await CreateConference(confID);
+            string confContent = await CreateConference();
             ucID = DeserializeJson<ConferenceResponse>(confContent).ucID;
 
             Timer timer = new Timer(10000);
@@ -126,7 +126,7 @@ namespace CallStatsClient
 
         #region User Action Events
 
-        private async Task<string> CreateConference(string confID)
+        private async Task<string> CreateConference()
         {
             string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}";
 
@@ -162,6 +162,22 @@ namespace CallStatsClient
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now()
+            };
+
+            await SendRequest(data, url);
+        }
+
+        private async Task UserDetails()
+        {
+            string url = $"https://HOSTNAME/v1/apps/{appID}/conferences/{confID}/{ucID}/events/userdetails";
+
+            object data = new
+            {
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                userName = "userName"
             };
 
             await SendRequest(data, url);
