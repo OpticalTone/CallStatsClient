@@ -741,7 +741,7 @@ namespace CallStatsClient
             await SendRequest(data, url);
         }
 
-        public async Task ConnectionDisruptionStart()
+        public async Task IceConnectionDisruptionStart()
         {
             string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
 
@@ -756,6 +756,27 @@ namespace CallStatsClient
                 connectionID = ucID,
                 currIceConnectionState = "disconnected",
                 prevIceConnectionState = "checking"
+            };
+
+            await SendRequest(data, url);
+        }
+
+        public async Task IceConnectionDisruptionEnd()
+        {
+            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
+
+            object data = new
+            {
+                eventType = "iceDisruptionStart",
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                remoteID = "remoteID",
+                connectionID = ucID,
+                currIceConnectionState = "checking",
+                prevIceConnectionState = "disconnected",
+                delay = 0
             };
 
             await SendRequest(data, url);
