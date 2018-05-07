@@ -1011,6 +1011,21 @@ namespace CallStatsClient
             await SendRequest(data, url);
         }
 
+        public async Task BridgeAlive()
+        {
+            string url = $"https://stats.callstats.io/v1/apps/{appID}/stats/bridge/alive";
+
+            object data = new
+            {
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now()
+            };
+
+            await SendRequest(data, url);
+        }
+
         #endregion
 
 
