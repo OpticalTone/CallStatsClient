@@ -590,6 +590,66 @@ namespace CallStatsClient
             await SendRequest(data, url);
         }
 
+        public async Task IceFailed()
+        {
+            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
+
+            List<object> localIceCandidatesList = new List<object>();
+            object localIceCandidate = new
+            {
+                id = "1",
+                type = "localcandidate",
+                ip = "127.0.0.1",
+                port = 8888,
+                candidateType = "host",
+                transport = "tcp"
+            };
+            localIceCandidatesList.Add(localIceCandidate);
+
+            List<object> remoteIceCandidatesList = new List<object>();
+            object remoteIceCandidate = new
+            {
+                id = "2",
+                type = "remotecandidate",
+                ip = "127.0.0.2",
+                port = 8888,
+                candidateType = "host",
+                transport = "tcp"
+            };
+            remoteIceCandidatesList.Add(remoteIceCandidate);
+
+            List<object> iceCandidatePairsList = new List<object>();
+            object iceCandidatePair = new
+            {
+                id = "3",
+                localCandidateId = "1",
+                remoteCandidateId = "2",
+                state = "succeeded",
+                priority = 1,
+                nominated = true
+            };
+            iceCandidatePairsList.Add(iceCandidatePair);
+
+            object data = new
+            {
+                eventType = "iceDisruptionStart",
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                remoteID = "remoteID",
+                connectionID = ucID,
+                localIceCandidates = localIceCandidatesList,
+                remoteIceCandidates = remoteIceCandidatesList,
+                iceCandidatePairs = iceCandidatePairsList,
+                currIceConnectionState = "failed",
+                prevIceConnectionState = "disconnected",
+                delay = 0
+            };
+
+            await SendRequest(data, url);
+        }
+
         #endregion
 
         #region Special Events
