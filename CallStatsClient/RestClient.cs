@@ -908,6 +908,21 @@ namespace CallStatsClient
             await SendRequest(data, url);
         }
 
+        private async Task DominantSpeaker()
+        {
+            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/dominantspeaker";
+
+            object data = new
+            {
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now()
+            };
+
+            await SendRequest(data, url);
+        }
+
         private async Task SSRCMap()
         {
             string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ssrcmap";
