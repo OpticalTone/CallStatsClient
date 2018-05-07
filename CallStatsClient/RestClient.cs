@@ -557,6 +557,39 @@ namespace CallStatsClient
             await SendRequest(data, url);
         }
 
+        public async Task IceRestart()
+        {
+            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
+
+            List<object> prevIceCandidatePairList = new List<object>();
+            object prevIceCandidatePairObj = new
+            {
+                id = "0",
+                localCandidateId = "0",
+                remoteCandidateId = "0",
+                state = "frozen",
+                priority = 1,
+                nominated = true
+            };
+            prevIceCandidatePairList.Add(prevIceCandidatePairObj);
+
+            object data = new
+            {
+                eventType = "iceDisruptionStart",
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                remoteID = "remoteID",
+                connectionID = ucID,
+                prevIceCandidatePair = prevIceCandidatePairList,
+                currIceConnectionState = "new",
+                prevIceConnectionState = "completed"
+            };
+
+            await SendRequest(data, url);
+        }
+
         #endregion
 
         #region Special Events
