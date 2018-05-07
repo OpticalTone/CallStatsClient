@@ -977,6 +977,43 @@ namespace CallStatsClient
 
         #endregion
 
+        #region Bridge Events
+
+        private async Task BridgeStatistics()
+        {
+            string url = $"https://stats.callstats.io/v1/apps/{appID}/stats/bridge/status";
+
+            object data = new
+            {
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                cpuUsage = 5,
+                batteryLevel = 50,
+                memoryUsage = 2,
+                totalMemory = 100,
+                threadCount = 1,
+                intervalSentBytes = 0,
+                intervalReceivedBytes = 0,
+                intervalRtpFractionLoss = 0,
+                totalRtpLostPackets = 0,
+                intervalAverageRtt = 0,
+                intervalAverageJitter = 0,
+                intervalDownloadBitrate = 0,
+                intervalUploadBitrate = 0,
+                audioFabricCount = 0,
+                videoFabricCount = 0,
+                conferenceCount = 0,
+                participantCount = 0
+            };
+
+            await SendRequest(data, url);
+        }
+
+        #endregion
+
+
         private async Task<string> SendRequest(object data, string url)
         {
             string dataContent = JsonConvert.SerializeObject(data);
