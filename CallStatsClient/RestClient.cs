@@ -25,12 +25,11 @@ namespace CallStatsClient
         private string token;
         private string ucID;
 
-        public RestClient(string localID, string appID, string confID, string keyID)
+        public RestClient()
         {
-            this.localID = localID;
-            this.appID = appID;
-            this.confID = confID;
-            this.keyID = keyID;
+            localID = Config.localSettings.Values["localID"].ToString();
+            appID = Config.localSettings.Values["appID"].ToString();
+            keyID = Config.localSettings.Values["keyID"].ToString();
         }
 
         public async Task StepsToIntegrate()
@@ -42,7 +41,9 @@ namespace CallStatsClient
 
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
 
-            string confContent = await CreateConference();
+            confID = Config.localSettings.Values["confID"].ToString();
+
+            string confContent = await CreateConference(confID);
             ucID = DeserializeJson<ConferenceResponse>(confContent).ucID;
 
             Timer timer = new Timer(10000);
@@ -115,8 +116,8 @@ namespace CallStatsClient
                 { "exp", TimeStamp.ExpireInHours(1) },
                 { "jti", "aSdFgHjKlZxCvBnM" }
             };
-
-            ECDsa privateKey = new X509Certificate2("ecc-key.p12", "pass").GetECDsaPrivateKey();
+            
+            ECDsa privateKey = new X509Certificate2("ecc-key.p12", Config.localSettings.Values["password"].ToString()).GetECDsaPrivateKey();
 
             return JWT.Encode(payload, privateKey, JwsAlgorithm.ES256, extraHeaders: header);
         }
@@ -125,7 +126,7 @@ namespace CallStatsClient
 
         #region User Action Events
 
-        private async Task<string> CreateConference()
+        private async Task<string> CreateConference(string confID)
         {
             string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}";
 

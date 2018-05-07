@@ -27,12 +27,14 @@ namespace CallStatsClient
         {
             this.InitializeComponent();
 
+            Config.AppSettings();
+
             var task = InitializeCallStats();
         }
 
         public async Task InitializeCallStats()
         {
-            RestClient rClient = new RestClient("123", "658825596", "1", "b896d04b31a97812b0");
+            RestClient rClient = new RestClient();
 
             await rClient.StepsToIntegrate();
         }
