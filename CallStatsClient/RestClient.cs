@@ -403,6 +403,24 @@ namespace CallStatsClient
             await SendRequest(data, url);
         }
 
+        public async Task FabricAction()
+        {
+            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/fabric/actions";
+
+            object data = new
+            {
+                eventType = "fabricHold",
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                remoteID = "remoteID",
+                connectionID = ucID
+            };
+
+            await SendRequest(data, url);
+        }
+
         #endregion
 
         #region Stats Submission
