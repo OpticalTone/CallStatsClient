@@ -741,6 +741,26 @@ namespace CallStatsClient
             await SendRequest(data, url);
         }
 
+        public async Task ConnectionDisruptionStart()
+        {
+            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
+
+            object data = new
+            {
+                eventType = "iceDisruptionStart",
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                remoteID = "remoteID",
+                connectionID = ucID,
+                currIceConnectionState = "disconnected",
+                prevIceConnectionState = "checking"
+            };
+
+            await SendRequest(data, url);
+        }
+
         #endregion
 
         #region Special Events
