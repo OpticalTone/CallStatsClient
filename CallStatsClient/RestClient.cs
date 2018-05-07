@@ -831,6 +831,37 @@ namespace CallStatsClient
 
         #endregion
 
+        #region Device Events
+
+        public async Task ConnectedOrActiveDevices()
+        {
+            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/devices/list";
+
+            List<object> mediaDeviceList = new List<object>();
+            object mediaDevice = new
+            {
+                mediaDeviceID = "mediaDeviceID",
+                kind = "videoinput",
+                label = "external USB Webcam",
+                groupID = "groupID"
+            };
+            mediaDeviceList.Add(mediaDevice); 
+
+            object data = new
+            {
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                mediaDeviceList = mediaDeviceList,
+                eventType = "connectedDeviceList"
+            };
+
+            await SendRequest(data, url);
+        }
+
+        #region
+
         #region Special Events
 
         private async Task SSRCMap()
