@@ -169,7 +169,7 @@ namespace CallStatsClient
 
         private async Task UserDetails()
         {
-            string url = $"https://HOSTNAME/v1/apps/{appID}/conferences/{confID}/{ucID}/events/userdetails";
+            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/userdetails";
 
             object data = new
             {
@@ -299,6 +299,26 @@ namespace CallStatsClient
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
                 connectionID = ucID
+            };
+
+            await SendRequest(data, url);
+        }
+
+        public async Task FabricStateChange()
+        {
+            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/fabric/statechange";
+
+            object data = new
+            {
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                remoteID = "remoteID",
+                connectionID = ucID,
+                prevState = "stable",
+                newState = "have-local-offer",
+                changedState = "signalingState"
             };
 
             await SendRequest(data, url);
