@@ -385,6 +385,7 @@ namespace CallStatsClient
                 priority = 1,
                 nominated = true
             };
+            currIceCandidatePairList.Add(currIceCandidateObj);
 
             object data = new
             {
@@ -469,6 +470,43 @@ namespace CallStatsClient
                 threadCount = 1
             };
 
+            await SendRequest(data, url);
+        }
+
+        #endregion
+
+        #region Ice Events 
+
+        public async Task IceDisruptionStart()
+        {
+            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
+
+            List<object> currIceCandidatePairList = new List<object>();
+            object currIceCandidateObj = new
+            {
+                id = "4",
+                localCandidateId = "1",
+                remoteCandidateId = "2",
+                state = "frozen",
+                priority = 1,
+                nominated = true
+            };
+            currIceCandidatePairList.Add(currIceCandidateObj);
+
+            object data = new
+            {
+                eventType = "iceDisruptionStart",
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                remoteID = "remoteID",
+                connectionID = ucID,
+                currIceCandidatePair = currIceCandidatePairList,
+                currIceConnectionState = "disconnected",
+                prevIceConnectionState = "completed"
+            };
+            
             await SendRequest(data, url);
         }
 
