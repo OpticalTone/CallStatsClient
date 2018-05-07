@@ -948,9 +948,28 @@ namespace CallStatsClient
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
-                connectionID = "connectionID",
+                connectionID = ucID,
                 remoteID = "remoteID",
                 ssrcData = ssrcDataList
+            };
+
+            await SendRequest(data, url);
+        }
+
+        public async Task SDPEvent()
+        {
+            string url = $"https://HOSTNAME/v1/apps/{appID}/conferences/{confID}/{ucID}/events/sdp";
+
+            object data = new
+            {
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                connectionID = ucID,
+                remoteID = "remoteID",
+                localSDP = "",
+                remoteSDP = ""
             };
 
             await SendRequest(data, url);
