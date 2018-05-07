@@ -883,6 +883,31 @@ namespace CallStatsClient
             await SendRequest(data, url);
         }
 
+        public async Task ConferenceUserFeedback()
+        {
+            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/feedback";
+
+            object feedbackObj = new
+            {
+                overallRating = 5,
+                videoQualityRating = 5,
+                audioQualityRating = 5,
+                comments = "comments"
+            };
+
+            object data = new
+            {
+                localID = localID,
+                originID = "originID",
+                deviceID = "deviceID",
+                timestamp = TimeStamp.Now(),
+                remoteID = "remoteID",
+                feedback = feedbackObj
+            };
+
+            await SendRequest(data, url);
+        }
+
         private async Task SSRCMap()
         {
             string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ssrcmap";
