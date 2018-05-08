@@ -100,9 +100,6 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Responses\AuthenticationResponse.cs" />
-    <Compile Include="Responses\ConferenceResponse.cs" />
-    <Compile Include="Responses\FabricResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
