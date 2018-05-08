@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CallStatsClient
+namespace CallStatsLib
 {
     class TimeStamp
     {

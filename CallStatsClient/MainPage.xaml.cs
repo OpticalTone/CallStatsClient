@@ -1,8 +1,11 @@
-﻿using System;
+﻿using CallStatsLib;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -29,14 +32,21 @@ namespace CallStatsClient
 
             Config.AppSettings();
 
-            var task = InitializeCallStats();
+            Task task = InitializeCallStats();
         }
 
         public async Task InitializeCallStats()
         {
-            RestClient rClient = new RestClient();
+            string localID = Config.localSettings.Values["localID"].ToString();
+            string appID = Config.localSettings.Values["appID"].ToString();
+            string keyID = Config.localSettings.Values["keyID"].ToString();
 
-            await rClient.StepsToIntegrate();
+            RestClient rClient = new RestClient(localID, appID, keyID);
+
+            string confID = Config.localSettings.Values["confID"].ToString();
+            ECDsa privateKey = new X509Certificate2("ecc-key.p12", Config.localSettings.Values["password"].ToString()).GetECDsaPrivateKey();
+
+            await rClient.StepsToIntegrate(confID, privateKey);
         }
     }
 }

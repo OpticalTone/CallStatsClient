@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallStatsClient", "CallStatsClient.csproj", "{BF66BA47-50B2-46F9-8374-44311EF7BF46}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallStatsLib", "..\CallStatsLib\CallStatsLib.csproj", "{E9B00EF3-246C-4E0E-B89B-5B23E77B8FB3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallStatsLib", "CallStatsLib.csproj", "{E9B00EF3-246C-4E0E-B89B-5B23E77B8FB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,26 +17,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Debug|ARM.ActiveCfg = Debug|ARM
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Debug|ARM.Build.0 = Debug|ARM
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Debug|ARM.Deploy.0 = Debug|ARM
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Debug|x64.ActiveCfg = Debug|x64
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Debug|x64.Build.0 = Debug|x64
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Debug|x64.Deploy.0 = Debug|x64
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Debug|x86.ActiveCfg = Debug|x86
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Debug|x86.Build.0 = Debug|x86
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Debug|x86.Deploy.0 = Debug|x86
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Release|Any CPU.ActiveCfg = Release|x86
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Release|ARM.ActiveCfg = Release|ARM
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Release|ARM.Build.0 = Release|ARM
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Release|ARM.Deploy.0 = Release|ARM
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Release|x64.ActiveCfg = Release|x64
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Release|x64.Build.0 = Release|x64
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Release|x64.Deploy.0 = Release|x64
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Release|x86.ActiveCfg = Release|x86
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Release|x86.Build.0 = Release|x86
-		{BF66BA47-50B2-46F9-8374-44311EF7BF46}.Release|x86.Deploy.0 = Release|x86
 		{E9B00EF3-246C-4E0E-B89B-5B23E77B8FB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E9B00EF3-246C-4E0E-B89B-5B23E77B8FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9B00EF3-246C-4E0E-B89B-5B23E77B8FB3}.Debug|ARM.ActiveCfg = Debug|ARM
@@ -60,6 +38,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {B902BD9B-6A5B-4543-A848-36DF12716F7B}
+		SolutionGuid = {44678784-0EDA-455F-85C9-0286A3AFE419}
 	EndGlobalSection
 EndGlobal

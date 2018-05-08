@@ -1,20 +1,19 @@
-﻿using Jose;
-using Newtonsoft.Json;
+﻿using CallStatsLib.Responses;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Timers;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using CallStatsClient.Responses;
+using System.Diagnostics;
+using System.Security.Cryptography;
+using Jose;
+using System.Net.Http.Headers;
+using Newtonsoft.Json;
 
-namespace CallStatsClient
+namespace CallStatsLib
 {
-    class RestClient
+    public class RestClient
     {
         private static readonly HttpClient client = new HttpClient();
 
@@ -25,29 +24,29 @@ namespace CallStatsClient
         private string token;
         private string ucID;
 
-        public RestClient()
+        public RestClient(string localID, string appID, string keyID)
         {
-            localID = Config.localSettings.Values["localID"].ToString();
-            appID = Config.localSettings.Values["appID"].ToString();
-            keyID = Config.localSettings.Values["keyID"].ToString();
+            this.localID = localID;
+            this.appID = appID;
+            this.keyID = keyID;
         }
 
-        public async Task StepsToIntegrate()
+        public async Task StepsToIntegrate(string confID, ECDsa privateKey)
         {
-            token = GenerateJWT();
+            token = GenerateJWT(privateKey);
 
             string authContent = await Authentication();
             string accessToken = DeserializeJson<AuthenticationResponse>(authContent).access_token;
 
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
 
-            confID = Config.localSettings.Values["confID"].ToString();
+            this.confID = confID;
 
             string confContent = await CreateConference();
             ucID = DeserializeJson<ConferenceResponse>(confContent).ucID;
 
             Timer timer = new Timer(10000);
-            timer.Elapsed += async (sender, e) => 
+            timer.Elapsed += async (sender, e) =>
             {
                 Debug.WriteLine("UserAlive: ");
                 await UserAlive();
@@ -98,7 +97,7 @@ namespace CallStatsClient
             return content;
         }
 
-        private string GenerateJWT()
+        private string GenerateJWT(ECDsa privateKey)
         {
             var header = new Dictionary<string, object>()
             {
@@ -116,8 +115,6 @@ namespace CallStatsClient
                 { "exp", TimeStamp.ExpireInHours(1) },
                 { "jti", "aSdFgHjKlZxCvBnM" }
             };
-            
-            ECDsa privateKey = new X509Certificate2("ecc-key.p12", Config.localSettings.Values["password"].ToString()).GetECDsaPrivateKey();
 
             return JWT.Encode(payload, privateKey, JwsAlgorithm.ES256, extraHeaders: header);
         }
@@ -506,7 +503,7 @@ namespace CallStatsClient
                 currIceConnectionState = "disconnected",
                 prevIceConnectionState = "completed"
             };
-            
+
             await SendRequest(data, url);
         }
 
@@ -845,7 +842,7 @@ namespace CallStatsClient
                 label = "external USB Webcam",
                 groupID = "groupID"
             };
-            mediaDeviceList.Add(mediaDevice); 
+            mediaDeviceList.Add(mediaDevice);
 
             object data = new
             {
@@ -1027,7 +1024,6 @@ namespace CallStatsClient
         }
 
         #endregion
-
 
         private async Task<string> SendRequest(object data, string url)
         {
