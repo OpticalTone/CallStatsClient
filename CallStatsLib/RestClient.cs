@@ -10,6 +10,8 @@ using System.Security.Cryptography;
 using Jose;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
+using System.Linq;
+using CallStatsLib.Request;
 
 namespace CallStatsLib
 {
@@ -17,33 +19,44 @@ namespace CallStatsLib
     {
         private static readonly HttpClient client = new HttpClient();
 
-        private string localID;
-        private string appID;
-        private string confID;
-        private string keyID;
-        private string token;
-        private string ucID;
+        private string _localID;
+        private string _appID;
+        private string _keyID;
+        private string _confID;
+        private ECDsa _privateKey; 
+        private string _ucID;
+        private string _originID;
+        private string _deviceID;
 
-        public RestClient(string localID, string appID, string keyID)
+        private static readonly string _jti = new Func<string>(() => 
         {
-            this.localID = localID;
-            this.appID = appID;
-            this.keyID = keyID;
+            Random random = new Random();
+            const string chars = "abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const int length = 10;
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+        })();
+
+        public RestClient(string localID, string appID, string keyID, string confID, ECDsa privateKey)
+        {
+            _localID = localID;
+            _appID = appID;
+            _keyID = keyID;
+            _confID = confID;
+            _privateKey = privateKey;
         }
 
-        public async Task StepsToIntegrate(string confID, ECDsa privateKey)
+        public async Task StepsToIntegrate(CreateConferenceData createConferenceData, FabricSetupData fabricSetupData)
         {
-            token = GenerateJWT(privateKey);
-
             string authContent = await Authentication();
             string accessToken = DeserializeJson<AuthenticationResponse>(authContent).access_token;
 
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
 
-            this.confID = confID;
+            _originID = createConferenceData.originID;
+            _deviceID = createConferenceData.deviceID;
 
-            string confContent = await CreateConference();
-            ucID = DeserializeJson<ConferenceResponse>(confContent).ucID;
+            string confContent = await CreateConference(createConferenceData.endpointInfo);
+            _ucID = DeserializeJson<ConferenceResponse>(confContent).ucID;
 
             Timer timer = new Timer(10000);
             timer.Elapsed += async (sender, e) =>
@@ -54,7 +67,7 @@ namespace CallStatsLib
             timer.Start();
 
             Debug.WriteLine("FabricSetup: ");
-            string fabricStatus = await FabricSetup();
+            string fabricStatus = await FabricSetup(fabricSetupData);
 
             if (fabricStatus != "success")
             {
@@ -82,8 +95,8 @@ namespace CallStatsLib
             var values = new Dictionary<string, string>
             {
                 { "grant_type", "authorization_code" },
-                { "code", token },
-                { "client_id", localID + "@" + appID }
+                { "code", GenerateJWT() },
+                { "client_id", _localID + "@" + _appID }
             };
 
             string url = "https://auth.callstats.io/authenticate";
@@ -92,12 +105,11 @@ namespace CallStatsLib
             req.Content = new FormUrlEncodedContent(values);
 
             HttpResponseMessage res = await client.SendAsync(req);
-            string content = await res.Content.ReadAsStringAsync();
 
-            return content;
+            return await res.Content.ReadAsStringAsync();
         }
 
-        private string GenerateJWT(ECDsa privateKey)
+        private string GenerateJWT()
         {
             var header = new Dictionary<string, object>()
             {
@@ -107,70 +119,58 @@ namespace CallStatsLib
 
             var payload = new Dictionary<string, object>()
             {
-                { "userID", localID },
-                { "appID", appID },
-                { "keyID", keyID },
+                { "userID", _localID },
+                { "appID", _appID },
+                { "keyID", _keyID },
                 { "iat", TimeStamp.Now() },
                 { "nbf", TimeStamp.Now() },
                 { "exp", TimeStamp.ExpireInHours(1) },
-                { "jti", "aSdFgHjKlZxCvBnM" }
+                { "jti", _jti }
             };
 
-            return JWT.Encode(payload, privateKey, JwsAlgorithm.ES256, extraHeaders: header);
+            return JWT.Encode(payload, _privateKey, JwsAlgorithm.ES256, extraHeaders: header);
         }
 
         #endregion
 
         #region User Action Events
 
-        private async Task<string> CreateConference()
+        private async Task<string> CreateConference(EndpointInfo endpointInfoObj)
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}";
 
             object data = new
             {
-                localID = localID,
-                originID = "originID",
-                deviceID = "deviceID",
+                localID = _localID,
+                originID = _originID,
+                deviceID = _deviceID,
                 timestamp = TimeStamp.Now(),
-                endpointInfo = new
-                {
-                    type = "browser",
-                    os = "os",
-                    osVersion = "osVersion",
-                    buildName = "buildName",
-                    buildVersion = "buildVersion",
-                    appVersion = "appVersion"
-                }
+                endpointInfo = endpointInfoObj
             };
-
-            string content = await SendRequest(data, url);
-
-            return content;
+            return await SendRequest(data, url);
         }
 
         private async Task UserAlive()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/user/alive";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/user/alive";
 
             object data = new
             {
-                localID = localID,
-                originID = "originID",
-                deviceID = "deviceID",
+                localID = _localID,
+                originID = _originID,
+                deviceID = _deviceID,
                 timestamp = TimeStamp.Now()
             };
-
             await SendRequest(data, url);
         }
 
         private async Task UserDetails()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/userdetails";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/userdetails";
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
@@ -182,11 +182,11 @@ namespace CallStatsLib
 
         public async Task UserLeft()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/user/left";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/user/left";
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now()
@@ -199,62 +199,26 @@ namespace CallStatsLib
 
         #region Fabric Events 
 
-        public async Task<string> FabricSetup()
+        public async Task<string> FabricSetup(FabricSetupData fabricSetupData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/fabric/setup";
-
-            List<object> localIceCandidatesList = new List<object>();
-            object localIceCandidate = new
-            {
-                id = "1",
-                type = "localcandidate",
-                ip = "127.0.0.1",
-                port = 8888,
-                candidateType = "host",
-                transport = "tcp"
-            };
-            localIceCandidatesList.Add(localIceCandidate);
-
-            List<object> remoteIceCandidatesList = new List<object>();
-            object remoteIceCandidate = new
-            {
-                id = "2",
-                type = "remotecandidate",
-                ip = "127.0.0.2",
-                port = 8888,
-                candidateType = "host",
-                transport = "tcp"
-            };
-            remoteIceCandidatesList.Add(remoteIceCandidate);
-
-            List<object> iceCandidatePairsList = new List<object>();
-            object iceCandidatePair = new
-            {
-                id = "3",
-                localCandidateId = "1",
-                remoteCandidateId = "2",
-                state = "succeeded",
-                priority = 1,
-                nominated = true
-            };
-            iceCandidatePairsList.Add(iceCandidatePair);
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setup";
 
             object data = new
             {
-                localID = localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                remoteID = "remoteID",
-                delay = 0,
-                connectionID = "connectionID",
-                iceGatheringDelay = 0,
-                iceConnectivityDelay = 0,
-                fabricTransmissionDirection = "sendrecv",
-                remoteEndpointType = "peer",
-                localIceCandidates = localIceCandidatesList,
-                remoteIceCandidates = remoteIceCandidatesList,
-                iceCandidatePairs = iceCandidatePairsList
+                localID = _localID,
+                originID = _originID,
+                deviceID = _deviceID,
+                timestamp = fabricSetupData.timestamp,
+                remoteID = fabricSetupData.remoteID,
+                delay = fabricSetupData.delay,
+                connectionID = _ucID,
+                iceGatheringDelay = fabricSetupData.iceGatheringDelay,
+                iceConnectivityDelay = fabricSetupData.iceConnectivityDelay,
+                fabricTransmissionDirection = fabricSetupData.fabricTransmissionDirection,
+                remoteEndpointType = fabricSetupData.remoteEndpointType,
+                localIceCandidates = fabricSetupData.localIceCandidates,
+                remoteIceCandidates = fabricSetupData.remoteIceCandidates,
+                iceCandidatePairs = fabricSetupData.iceCandidatePairs
             };
 
             string fabricContent = await SendRequest(data, url);
@@ -264,11 +228,11 @@ namespace CallStatsLib
 
         public async Task<string> FabricSetupFailed()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/fabric/setupfailed";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setupfailed";
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
@@ -286,16 +250,16 @@ namespace CallStatsLib
 
         public async Task FabricTerminated()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/fabric/terminated";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/terminated";
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID
+                connectionID = _ucID
             };
 
             await SendRequest(data, url);
@@ -303,16 +267,16 @@ namespace CallStatsLib
 
         public async Task FabricStateChange()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/fabric/statechange";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/statechange";
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID,
+                connectionID = _ucID,
                 prevState = "stable",
                 newState = "have-local-offer",
                 changedState = "signalingState"
@@ -323,7 +287,7 @@ namespace CallStatsLib
 
         public async Task FabricTransportChange()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/fabric/transportchange";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/transportchange";
 
             List<object> currIceCandidatePairList = new List<object>();
             object currIceCandidateObj = new
@@ -351,12 +315,12 @@ namespace CallStatsLib
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID,
+                connectionID = _ucID,
                 currIceCandidatePair = currIceCandidatePairList,
                 prevIceCandidatePair = prevIceCandidatePairObj,
                 currIceConnectionState = "completed",
@@ -370,7 +334,7 @@ namespace CallStatsLib
 
         public async Task FabricDropped()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/fabric/status";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/status";
 
             List<object> currIceCandidatePairList = new List<object>();
             object currIceCandidateObj = new
@@ -386,12 +350,12 @@ namespace CallStatsLib
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID,
+                connectionID = _ucID,
                 currIceCandidatePair = currIceCandidatePairList,
                 currIceConnectionState = "failed",
                 prevIceConnectionState = "disconnected",
@@ -403,17 +367,17 @@ namespace CallStatsLib
 
         public async Task FabricAction()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/fabric/actions";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/actions";
 
             object data = new
             {
                 eventType = "fabricHold",
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID
+                connectionID = _ucID
             };
 
             await SendRequest(data, url);
@@ -425,7 +389,7 @@ namespace CallStatsLib
 
         public async Task ConferenceStatsSubmission()
         {
-            var url = $"https://stats.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/stats";
+            var url = $"https://stats.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/stats";
 
             List<object> statsList = new List<object>();
             object objStats = new
@@ -438,10 +402,10 @@ namespace CallStatsLib
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
-                connectionID = ucID,
+                connectionID = _ucID,
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
                 stats = statsList
@@ -452,11 +416,11 @@ namespace CallStatsLib
 
         public async Task SystemStatusStatsSubmission()
         {
-            string url = $"https://stats.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/stats/system";
+            string url = $"https://stats.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/stats/system";
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
@@ -476,7 +440,7 @@ namespace CallStatsLib
 
         public async Task IceDisruptionStart()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";
 
             List<object> currIceCandidatePairList = new List<object>();
             object currIceCandidateObj = new
@@ -493,12 +457,12 @@ namespace CallStatsLib
             object data = new
             {
                 eventType = "iceDisruptionStart",
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID,
+                connectionID = _ucID,
                 currIceCandidatePair = currIceCandidatePairList,
                 currIceConnectionState = "disconnected",
                 prevIceConnectionState = "completed"
@@ -509,7 +473,7 @@ namespace CallStatsLib
 
         public async Task IceDisruptionEnd()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";
 
             List<object> currIceCandidatePairList = new List<object>();
             object currIceCandidateObj = new
@@ -538,12 +502,12 @@ namespace CallStatsLib
             object data = new
             {
                 eventType = "iceDisruptionStart",
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID,
+                connectionID = _ucID,
                 currIceCandidatePair = currIceCandidatePairList,
                 prevIceCandidatePair = prevIceCandidatePairList,
                 currIceConnectionState = "connected",
@@ -556,7 +520,7 @@ namespace CallStatsLib
 
         public async Task IceRestart()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";
 
             List<object> prevIceCandidatePairList = new List<object>();
             object prevIceCandidatePairObj = new
@@ -573,12 +537,12 @@ namespace CallStatsLib
             object data = new
             {
                 eventType = "iceDisruptionStart",
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID,
+                connectionID = _ucID,
                 prevIceCandidatePair = prevIceCandidatePairList,
                 currIceConnectionState = "new",
                 prevIceConnectionState = "completed"
@@ -589,7 +553,7 @@ namespace CallStatsLib
 
         public async Task IceFailed()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";
 
             List<object> localIceCandidatesList = new List<object>();
             object localIceCandidate = new
@@ -630,12 +594,12 @@ namespace CallStatsLib
             object data = new
             {
                 eventType = "iceDisruptionStart",
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID,
+                connectionID = _ucID,
                 localIceCandidates = localIceCandidatesList,
                 remoteIceCandidates = remoteIceCandidatesList,
                 iceCandidatePairs = iceCandidatePairsList,
@@ -649,7 +613,7 @@ namespace CallStatsLib
 
         public async Task IceAborted()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";
 
             List<object> localIceCandidatesList = new List<object>();
             object localIceCandidate = new
@@ -690,12 +654,12 @@ namespace CallStatsLib
             object data = new
             {
                 eventType = "iceDisruptionStart",
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID,
+                connectionID = _ucID,
                 localIceCandidates = localIceCandidatesList,
                 remoteIceCandidates = remoteIceCandidatesList,
                 iceCandidatePairs = iceCandidatePairsList,
@@ -709,7 +673,7 @@ namespace CallStatsLib
 
         public async Task IceTerminated()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";
 
             object prevIceCandidatePairObj = new
             {
@@ -724,12 +688,12 @@ namespace CallStatsLib
             object data = new
             {
                 eventType = "iceDisruptionStart",
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID,
+                connectionID = _ucID,
                 prevIceCandidatePair = prevIceCandidatePairObj,
                 currIceConnectionState = "closed",
                 prevIceConnectionState = "connected"
@@ -740,17 +704,17 @@ namespace CallStatsLib
 
         public async Task IceConnectionDisruptionStart()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";
 
             object data = new
             {
                 eventType = "iceDisruptionStart",
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID,
+                connectionID = _ucID,
                 currIceConnectionState = "disconnected",
                 prevIceConnectionState = "checking"
             };
@@ -760,17 +724,17 @@ namespace CallStatsLib
 
         public async Task IceConnectionDisruptionEnd()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ice/status";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";
 
             object data = new
             {
                 eventType = "iceDisruptionStart",
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID,
+                connectionID = _ucID,
                 currIceConnectionState = "checking",
                 prevIceConnectionState = "disconnected",
                 delay = 0
@@ -785,7 +749,7 @@ namespace CallStatsLib
 
         public async Task MediaAction()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/media/actions";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/media/actions";
 
             List<string> remoteIDList = new List<string>();
             remoteIDList.Add("remoteID1");
@@ -794,12 +758,12 @@ namespace CallStatsLib
             object data = new
             {
                 eventType = "screenShareStart",
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
                 remoteID = "remoteID",
-                connectionID = ucID,
+                connectionID = _ucID,
                 ssrc = "11",
                 mediaDeviceID = "mediaDeviceID",
                 remoteIDList = remoteIDList
@@ -810,12 +774,12 @@ namespace CallStatsLib
 
         public async Task MediaPlayback()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/media/pipeline";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/media/pipeline";
 
             object data = new
             {
                 eventType = "mediaPlaybackStart",
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
@@ -832,7 +796,7 @@ namespace CallStatsLib
 
         public async Task ConnectedOrActiveDevices()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/devices/list";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/devices/list";
 
             List<object> mediaDeviceList = new List<object>();
             object mediaDevice = new
@@ -846,7 +810,7 @@ namespace CallStatsLib
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
@@ -863,15 +827,15 @@ namespace CallStatsLib
 
         public async Task ApplicationErrorLogs()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/app/logs";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/app/logs";
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
-                connectionID = ucID,
+                connectionID = _ucID,
                 level = "debug",
                 message = "Application error message",
                 messageType = "json"
@@ -882,7 +846,7 @@ namespace CallStatsLib
 
         public async Task ConferenceUserFeedback()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/feedback";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/feedback";
 
             object feedbackObj = new
             {
@@ -894,7 +858,7 @@ namespace CallStatsLib
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
@@ -907,11 +871,11 @@ namespace CallStatsLib
 
         private async Task DominantSpeaker()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/dominantspeaker";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/dominantspeaker";
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now()
@@ -922,7 +886,7 @@ namespace CallStatsLib
 
         private async Task SSRCMap()
         {
-            string url = $"https://events.callstats.io/v1/apps/{appID}/conferences/{confID}/{ucID}/events/ssrcmap";
+            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ssrcmap";
 
             List<object> ssrcDataList = new List<object>();
             object ssrcData = new
@@ -941,11 +905,11 @@ namespace CallStatsLib
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
-                connectionID = ucID,
+                connectionID = _ucID,
                 remoteID = "remoteID",
                 ssrcData = ssrcDataList
             };
@@ -955,15 +919,15 @@ namespace CallStatsLib
 
         public async Task SDPEvent()
         {
-            string url = $"https://HOSTNAME/v1/apps/{appID}/conferences/{confID}/{ucID}/events/sdp";
+            string url = $"https://HOSTNAME/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/sdp";
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
-                connectionID = ucID,
+                connectionID = _ucID,
                 remoteID = "remoteID",
                 localSDP = "",
                 remoteSDP = ""
@@ -978,11 +942,11 @@ namespace CallStatsLib
 
         private async Task BridgeStatistics()
         {
-            string url = $"https://stats.callstats.io/v1/apps/{appID}/stats/bridge/status";
+            string url = $"https://stats.callstats.io/v1/apps/{_appID}/stats/bridge/status";
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now(),
@@ -1010,11 +974,11 @@ namespace CallStatsLib
 
         public async Task BridgeAlive()
         {
-            string url = $"https://stats.callstats.io/v1/apps/{appID}/stats/bridge/alive";
+            string url = $"https://stats.callstats.io/v1/apps/{_appID}/stats/bridge/alive";
 
             object data = new
             {
-                localID = localID,
+                localID = _localID,
                 originID = "originID",
                 deviceID = "deviceID",
                 timestamp = TimeStamp.Now()

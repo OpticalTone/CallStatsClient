@@ -1,4 +1,5 @@
 ﻿using CallStatsLib;
+using CallStatsLib.Request;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,6 +27,11 @@ namespace CallStatsClient
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private string _localID;
+        private string _appID;
+        private string _keyID;
+        private string _confID;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -37,16 +43,115 @@ namespace CallStatsClient
 
         public async Task InitializeCallStats()
         {
-            string localID = Config.localSettings.Values["localID"].ToString();
-            string appID = Config.localSettings.Values["appID"].ToString();
-            string keyID = Config.localSettings.Values["keyID"].ToString();
+            _localID = Config.localSettings.Values["localID"].ToString();
+            _appID = Config.localSettings.Values["appID"].ToString();
+            _keyID = Config.localSettings.Values["keyID"].ToString();
+            _confID = Config.localSettings.Values["confID"].ToString();
 
-            RestClient rClient = new RestClient(localID, appID, keyID);
-
-            string confID = Config.localSettings.Values["confID"].ToString();
             ECDsa privateKey = new X509Certificate2("ecc-key.p12", Config.localSettings.Values["password"].ToString()).GetECDsaPrivateKey();
 
-            await rClient.StepsToIntegrate(confID, privateKey);
+            RestClient rClient = new RestClient(_localID, _appID, _keyID, _confID, privateKey);
+
+            await rClient.StepsToIntegrate(AddCreateConferenceTestData(), AddFabricSetupTestData());
+        }
+
+        private enum EndpointInfoType
+        {
+            browser, native, plugin, middlebox
+        }
+
+        private CreateConferenceData AddCreateConferenceTestData()
+        {
+            CreateConferenceData createConferenceData = new CreateConferenceData();
+            createConferenceData.localID = _localID;
+            createConferenceData.originID = "originID";
+            createConferenceData.deviceID = "deviceID";
+            createConferenceData.timestamp = TimeStamp.Now();
+
+            EndpointInfo endpointInfo = new EndpointInfo();
+            endpointInfo.type = EndpointInfoType.browser.ToString();
+            endpointInfo.os = "";
+            endpointInfo.osVersion = "";
+            endpointInfo.buildName = "";
+            endpointInfo.buildVersion = "";
+            endpointInfo.appVersion = "";
+
+            createConferenceData.endpointInfo = endpointInfo;
+
+            return createConferenceData;
+        }
+
+        private enum FabricTransmissionDirection
+        {
+            sendrecv, sendonly, receiveonly
+        }
+
+        private enum RemoteEndpointType
+        {
+            peer, server
+        }
+
+        private enum IceCandidateType
+        {
+            host, srflx, prflx, relay, stun, serverreflexive,
+            peerreflexive, turn, relayed, local
+        }
+
+        private enum IceCandidateTransport
+        {
+            tcp, udp
+        }
+
+        private enum IceCandidateState
+        {
+            frozen, waiting, inprogress, failed, succeeded, cancelled
+        }
+
+        private FabricSetupData AddFabricSetupTestData()
+        {
+            List<IceCandidate> localIceCandidatesList = new List<IceCandidate>();
+            IceCandidate localIceCandidate = new IceCandidate();
+            localIceCandidate.id = "1";
+            localIceCandidate.type = "localcandidate";
+            localIceCandidate.ip = "127.0.0.1";
+            localIceCandidate.port = 8888;
+            localIceCandidate.candidateType = IceCandidateType.host.ToString();
+            localIceCandidate.transport = IceCandidateTransport.tcp.ToString();
+            localIceCandidatesList.Add(localIceCandidate);
+
+            List<IceCandidate> remoteIceCandidatesList = new List<IceCandidate>();
+            IceCandidate remoteIceCandidate = new IceCandidate();
+            remoteIceCandidate.id = "2";
+            remoteIceCandidate.type = "remotecandidate";
+            remoteIceCandidate.ip = "127.0.0.2";
+            remoteIceCandidate.port = 8888;
+            remoteIceCandidate.candidateType = IceCandidateType.host.ToString();
+            remoteIceCandidate.transport = IceCandidateTransport.tcp.ToString();
+            remoteIceCandidatesList.Add(remoteIceCandidate);
+
+            List<IceCandidatePair> iceCandidatePairsList = new List<IceCandidatePair>();
+            IceCandidatePair iceCandidatePair = new IceCandidatePair();
+            iceCandidatePair.id = "3";
+            iceCandidatePair.localCandidateId = "1";
+            iceCandidatePair.remoteCandidateId = "2";
+            iceCandidatePair.state = IceCandidateState.succeeded.ToString();
+            iceCandidatePair.priority = 1;
+            iceCandidatePair.nominated = true;
+            iceCandidatePairsList.Add(iceCandidatePair);
+
+            FabricSetupData fabricSetupData = new FabricSetupData();
+            fabricSetupData.timestamp = TimeStamp.Now();
+            fabricSetupData.remoteID = "remoteID";
+            fabricSetupData.delay = 0;
+            fabricSetupData.iceGatheringDelay = 0;
+            fabricSetupData.iceConnectivityDelay = 0;
+            fabricSetupData.fabricTransmissionDirection = FabricTransmissionDirection.sendrecv.ToString();
+            fabricSetupData.remoteEndpointType = RemoteEndpointType.peer.ToString();
+            fabricSetupData.localIceCandidates = localIceCandidatesList;
+            fabricSetupData.remoteIceCandidates = remoteIceCandidatesList;
+            fabricSetupData.iceCandidatePairs = iceCandidatePairsList;
+
+            return fabricSetupData;
         }
     }
 }

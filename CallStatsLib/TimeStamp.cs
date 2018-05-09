@@ -2,7 +2,7 @@
 
 namespace CallStatsLib
 {
-    class TimeStamp
+    public class TimeStamp
     {
         public static long Now()
         {
