@@ -111,6 +111,7 @@
     <Compile Include="Request\FabricSetupData.cs" />
     <Compile Include="Request\FabricTerminatedData.cs" />
     <Compile Include="Request\SSRCMapData.cs" />
+    <Compile Include="Request\UserLeftData.cs" />
     <Compile Include="Responses\AuthenticationResponse.cs" />
     <Compile Include="Responses\ConferenceResponse.cs" />
     <Compile Include="Responses\FabricResponse.cs" />

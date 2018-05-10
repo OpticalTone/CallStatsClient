@@ -56,7 +56,8 @@ namespace CallStatsClient
                                            AddFabricSetupTestData(), 
                                            AddSSRCMapTestData(),
                                            AddConferenceStatsSubmissionTestData(),
-                                           AddFabricTerminatedTestData());
+                                           AddFabricTerminatedTestData(),
+                                           AddUserLeftTestData());
         }
 
         private enum EndpointInfoType
@@ -221,6 +222,14 @@ namespace CallStatsClient
             fabricTerminatedData.remoteID = "remoteID";
 
             return fabricTerminatedData;
+        }
+
+        public UserLeftData AddUserLeftTestData()
+        {
+            UserLeftData userLeftData = new UserLeftData();
+            userLeftData.timestamp = TimeStamp.Now();
+
+            return userLeftData;
         }
     }
 }

@@ -48,7 +48,7 @@ namespace CallStatsLib
         public async Task StepsToIntegrate(CreateConferenceData createConferenceData, 
             FabricSetupData fabricSetupData, SSRCMapData ssrcMapData, 
             ConferenceStatsSubmissionData conferenceStatsSubmissionData,
-            FabricTerminatedData fabricTerminatedData)
+            FabricTerminatedData fabricTerminatedData, UserLeftData userLeftData)
         {
             string authContent = await Authentication();
             string accessToken = DeserializeJson<AuthenticationResponse>(authContent).access_token;
@@ -88,7 +88,7 @@ namespace CallStatsLib
             await FabricTerminated(fabricTerminatedData);
 
             Debug.WriteLine("UserLeft: ");
-            await UserLeft();
+            await UserLeft(userLeftData);
         }
 
         #region Authentication
@@ -183,19 +183,15 @@ namespace CallStatsLib
             await SendRequest(data, url);
         }
 
-        public async Task UserLeft()
+        public async Task UserLeft(UserLeftData userLeftData)
         {
             string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/user/left";
 
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now()
-            };
+            userLeftData.localID = _localID;
+            userLeftData.originID = _originID;
+            userLeftData.deviceID = _deviceID;
 
-            await SendRequest(data, url);
+            await SendRequest(userLeftData, url);
         }
 
         #endregion
