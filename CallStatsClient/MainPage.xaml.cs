@@ -55,7 +55,8 @@ namespace CallStatsClient
             await rClient.StepsToIntegrate(AddCreateConferenceTestData(), 
                                            AddFabricSetupTestData(), 
                                            AddSSRCMapTestData(),
-                                           AddConferenceStatsSubmissionTestData());
+                                           AddConferenceStatsSubmissionTestData(),
+                                           AddFabricTerminatedTestData());
         }
 
         private enum EndpointInfoType
@@ -211,6 +212,15 @@ namespace CallStatsClient
             conferenceStatsSubmissionData.stats = statsList;
 
             return conferenceStatsSubmissionData;
+        }
+
+        public FabricTerminatedData AddFabricTerminatedTestData()
+        {
+            FabricTerminatedData fabricTerminatedData = new FabricTerminatedData();
+            fabricTerminatedData.timestamp = TimeStamp.Now();
+            fabricTerminatedData.remoteID = "remoteID";
+
+            return fabricTerminatedData;
         }
     }
 }

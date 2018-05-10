@@ -47,7 +47,8 @@ namespace CallStatsLib
 
         public async Task StepsToIntegrate(CreateConferenceData createConferenceData, 
             FabricSetupData fabricSetupData, SSRCMapData ssrcMapData, 
-            ConferenceStatsSubmissionData conferenceStatsSubmissionData)
+            ConferenceStatsSubmissionData conferenceStatsSubmissionData,
+            FabricTerminatedData fabricTerminatedData)
         {
             string authContent = await Authentication();
             string accessToken = DeserializeJson<AuthenticationResponse>(authContent).access_token;
@@ -84,7 +85,7 @@ namespace CallStatsLib
             await ConferenceStatsSubmission(conferenceStatsSubmissionData);
 
             Debug.WriteLine("FabricTerminated: ");
-            await FabricTerminated();
+            await FabricTerminated(fabricTerminatedData);
 
             Debug.WriteLine("UserLeft: ");
             await UserLeft();
@@ -237,21 +238,16 @@ namespace CallStatsLib
             return DeserializeJson<FabricResponse>(fabricContent).status;
         }
 
-        public async Task FabricTerminated()
+        public async Task FabricTerminated(FabricTerminatedData fabricTerminatedData)
         {
             string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/terminated";
 
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                remoteID = "remoteID",
-                connectionID = _ucID
-            };
+            fabricTerminatedData.localID = _localID;
+            fabricTerminatedData.originID = _originID;
+            fabricTerminatedData.deviceID = _deviceID;
+            fabricTerminatedData.connectionID = _ucID;
 
-            await SendRequest(data, url);
+            await SendRequest(fabricTerminatedData, url);
         }
 
         public async Task FabricStateChange()

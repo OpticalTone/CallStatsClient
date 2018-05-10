@@ -109,6 +109,7 @@
     <Compile Include="Request\ConferenceStatsSubmissionData.cs" />
     <Compile Include="Request\CreateConferenceData.cs" />
     <Compile Include="Request\FabricSetupData.cs" />
+    <Compile Include="Request\FabricTerminatedData.cs" />
     <Compile Include="Request\SSRCMapData.cs" />
     <Compile Include="Responses\AuthenticationResponse.cs" />
     <Compile Include="Responses\ConferenceResponse.cs" />
