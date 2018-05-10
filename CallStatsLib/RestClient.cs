@@ -45,7 +45,7 @@ namespace CallStatsLib
             _privateKey = privateKey;
         }
 
-        public async Task StepsToIntegrate(CreateConferenceData createConferenceData, 
+        public async Task StepsToIntegrate(CreateConferenceData createConferenceData, UserAliveData userAliveData, 
             FabricSetupData fabricSetupData, FabricSetupFailedData fabricSetupFailedData, 
             SSRCMapData ssrcMapData, ConferenceStatsSubmissionData conferenceStatsSubmissionData,
             FabricTerminatedData fabricTerminatedData, UserLeftData userLeftData)
@@ -65,7 +65,7 @@ namespace CallStatsLib
             timer.Elapsed += async (sender, e) =>
             {
                 Debug.WriteLine("UserAlive: ");
-                await UserAlive();
+                await UserAlive(userAliveData);
             };
             timer.Start();
 
@@ -153,18 +153,15 @@ namespace CallStatsLib
             return await SendRequest(data, url);
         }
 
-        private async Task UserAlive()
+        private async Task UserAlive(UserAliveData userAliveData)
         {
             string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/user/alive";
 
-            object data = new
-            {
-                localID = _localID,
-                originID = _originID,
-                deviceID = _deviceID,
-                timestamp = TimeStamp.Now()
-            };
-            await SendRequest(data, url);
+            userAliveData.localID = _localID;
+            userAliveData.originID = _originID;
+            userAliveData.deviceID = _deviceID;
+
+            await SendRequest(userAliveData, url);
         }
 
         private async Task UserDetails()

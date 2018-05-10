@@ -48,6 +48,7 @@ namespace CallStatsClient
             RestClient rClient = new RestClient(localID, appID, keyID, confID, privateKey);
 
             await rClient.StepsToIntegrate(TestData.CreateConference(), 
+                                           TestData.UserAlive(), 
                                            TestData.FabricSetup(),
                                            TestData.FabricSetupFailed(), 
                                            TestData.SSRCMap(),

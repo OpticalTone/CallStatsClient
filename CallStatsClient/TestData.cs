@@ -32,6 +32,14 @@ namespace CallStatsClient
             return createConferenceData;
         }
 
+        public static UserAliveData UserAlive()
+        {
+            UserAliveData userAliveData = new UserAliveData();
+            userAliveData.timestamp = TimeStamp.Now();
+
+            return userAliveData;
+        }
+
         private enum FabricTransmissionDirection
         {
             sendrecv, sendonly, receiveonly
