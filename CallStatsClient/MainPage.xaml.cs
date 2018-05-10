@@ -52,7 +52,10 @@ namespace CallStatsClient
 
             RestClient rClient = new RestClient(_localID, _appID, _keyID, _confID, privateKey);
 
-            await rClient.StepsToIntegrate(AddCreateConferenceTestData(), AddFabricSetupTestData(), AddSSRCMapTestData());
+            await rClient.StepsToIntegrate(AddCreateConferenceTestData(), 
+                                           AddFabricSetupTestData(), 
+                                           AddSSRCMapTestData(),
+                                           AddConferenceStatsSubmissionTestData());
         }
 
         private enum EndpointInfoType
@@ -191,6 +194,23 @@ namespace CallStatsClient
             ssrcMapData.ssrcData = ssrcDataList;
 
             return ssrcMapData;
+        }
+
+        public ConferenceStatsSubmissionData AddConferenceStatsSubmissionTestData()
+        {
+            List<Stats> statsList = new List<Stats>();
+            Stats stats = new Stats();
+            stats.tracks = "track";
+            stats.candidatePairs = "3";
+            stats.timestamp = TimeStamp.Now();
+            statsList.Add(stats);
+
+            ConferenceStatsSubmissionData conferenceStatsSubmissionData = new ConferenceStatsSubmissionData();
+            conferenceStatsSubmissionData.timestamp = TimeStamp.Now();
+            conferenceStatsSubmissionData.remoteID = "remoteID";
+            conferenceStatsSubmissionData.stats = statsList;
+
+            return conferenceStatsSubmissionData;
         }
     }
 }

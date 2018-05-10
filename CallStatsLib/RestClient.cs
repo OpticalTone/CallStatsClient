@@ -45,7 +45,9 @@ namespace CallStatsLib
             _privateKey = privateKey;
         }
 
-        public async Task StepsToIntegrate(CreateConferenceData createConferenceData, FabricSetupData fabricSetupData, SSRCMapData ssrcMapData)
+        public async Task StepsToIntegrate(CreateConferenceData createConferenceData, 
+            FabricSetupData fabricSetupData, SSRCMapData ssrcMapData, 
+            ConferenceStatsSubmissionData conferenceStatsSubmissionData)
         {
             string authContent = await Authentication();
             string accessToken = DeserializeJson<AuthenticationResponse>(authContent).access_token;
@@ -79,7 +81,7 @@ namespace CallStatsLib
             await SSRCMap(ssrcMapData);
 
             Debug.WriteLine("ConferenceStatsSubmission: ");
-            await ConferenceStatsSubmission();
+            await ConferenceStatsSubmission(conferenceStatsSubmissionData);
 
             Debug.WriteLine("FabricTerminated: ");
             await FabricTerminated();
@@ -374,31 +376,16 @@ namespace CallStatsLib
 
         #region Stats Submission
 
-        public async Task ConferenceStatsSubmission()
+        public async Task ConferenceStatsSubmission(ConferenceStatsSubmissionData conferenceStatsSubmissionData)
         {
             var url = $"https://stats.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/stats";
 
-            List<object> statsList = new List<object>();
-            object objStats = new
-            {
-                tracks = "track",
-                candidatePairs = "3",
-                timestamp = TimeStamp.Now()
-            };
-            statsList.Add(objStats);
+            conferenceStatsSubmissionData.localID = _localID;
+            conferenceStatsSubmissionData.originID = _originID;
+            conferenceStatsSubmissionData.deviceID = _deviceID;
+            conferenceStatsSubmissionData.connectionID = _ucID;
 
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                connectionID = _ucID,
-                timestamp = TimeStamp.Now(),
-                remoteID = "remoteID",
-                stats = statsList
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(conferenceStatsSubmissionData, url);
         }
 
         public async Task SystemStatusStatsSubmission()
