@@ -46,8 +46,8 @@ namespace CallStatsLib
         }
 
         public async Task StepsToIntegrate(CreateConferenceData createConferenceData, 
-            FabricSetupData fabricSetupData, SSRCMapData ssrcMapData, 
-            ConferenceStatsSubmissionData conferenceStatsSubmissionData,
+            FabricSetupData fabricSetupData, FabricSetupFailedData fabricSetupFailedData, 
+            SSRCMapData ssrcMapData, ConferenceStatsSubmissionData conferenceStatsSubmissionData,
             FabricTerminatedData fabricTerminatedData, UserLeftData userLeftData)
         {
             string authContent = await Authentication();
@@ -75,7 +75,7 @@ namespace CallStatsLib
             if (fabricStatus != "success")
             {
                 Debug.WriteLine("FabricSetupFailed: ");
-                fabricStatus = await FabricSetupFailed();
+                fabricStatus = await FabricSetupFailed(fabricSetupFailedData);
             }
 
             Debug.WriteLine("SSRCMap: ");
@@ -212,24 +212,15 @@ namespace CallStatsLib
             return DeserializeJson<FabricResponse>(fabricContent).status;
         }
 
-        public async Task<string> FabricSetupFailed()
+        public async Task<string> FabricSetupFailed(FabricSetupFailedData fabricSetupFailedData)
         {
             string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setupfailed";
 
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                fabricTransmissionDirection = "sendrecv",
-                remoteEndpointType = "peer",
-                reason = "MediaConfigError",
-                name = "name",
-                stack = "stack"
-            };
+            fabricSetupFailedData.localID = _localID;
+            fabricSetupFailedData.originID = _originID;
+            fabricSetupFailedData.deviceID = _deviceID;
 
-            string fabricContent = await SendRequest(data, url);
+            string fabricContent = await SendRequest(fabricSetupFailedData, url);
 
             return DeserializeJson<FabricResponse>(fabricContent).status;
         }
