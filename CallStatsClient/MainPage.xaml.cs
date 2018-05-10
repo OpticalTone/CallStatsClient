@@ -52,7 +52,7 @@ namespace CallStatsClient
 
             RestClient rClient = new RestClient(_localID, _appID, _keyID, _confID, privateKey);
 
-            await rClient.StepsToIntegrate(AddCreateConferenceTestData(), AddFabricSetupTestData());
+            await rClient.StepsToIntegrate(AddCreateConferenceTestData(), AddFabricSetupTestData(), AddSSRCMapTestData());
         }
 
         private enum EndpointInfoType
@@ -152,6 +152,45 @@ namespace CallStatsClient
             fabricSetupData.iceCandidatePairs = iceCandidatePairsList;
 
             return fabricSetupData;
+        }
+
+        private enum StreamType
+        {
+            inbound, outbound
+        }
+
+        private enum ReportType
+        {
+            local, remote
+        }
+
+        private enum MediaType
+        {
+            audio, video, screen
+        }
+
+        public SSRCMapData AddSSRCMapTestData()
+        {
+            List<SSRCData> ssrcDataList = new List<SSRCData>();
+            SSRCData ssrcData = new SSRCData();
+            ssrcData.ssrc = "1";
+            ssrcData.cname = "cname";
+            ssrcData.streamType = StreamType.inbound.ToString();
+            ssrcData.reportType = ReportType.local.ToString();
+            ssrcData.mediaType = MediaType.audio.ToString();
+            ssrcData.userID = "userID";
+            ssrcData.msid = "msid";
+            ssrcData.mslabel = "mslabel";
+            ssrcData.label = "label";
+            ssrcData.localStartTime = TimeStamp.Now();
+            ssrcDataList.Add(ssrcData);
+
+            SSRCMapData ssrcMapData = new SSRCMapData();
+            ssrcMapData.timestamp = TimeStamp.Now();
+            ssrcMapData.remoteID = "remoteID";
+            ssrcMapData.ssrcData = ssrcDataList;
+
+            return ssrcMapData;
         }
     }
 }

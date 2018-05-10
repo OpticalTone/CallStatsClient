@@ -108,6 +108,7 @@
   <ItemGroup>
     <Compile Include="Request\CreateConferenceData.cs" />
     <Compile Include="Request\FabricSetupData.cs" />
+    <Compile Include="Request\SSRCMapData.cs" />
     <Compile Include="Responses\AuthenticationResponse.cs" />
     <Compile Include="Responses\ConferenceResponse.cs" />
     <Compile Include="Responses\FabricResponse.cs" />

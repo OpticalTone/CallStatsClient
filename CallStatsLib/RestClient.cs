@@ -31,7 +31,7 @@ namespace CallStatsLib
         private static readonly string _jti = new Func<string>(() => 
         {
             Random random = new Random();
-            const string chars = "abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string chars = "abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
             const int length = 10;
             return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
         })();
@@ -45,7 +45,7 @@ namespace CallStatsLib
             _privateKey = privateKey;
         }
 
-        public async Task StepsToIntegrate(CreateConferenceData createConferenceData, FabricSetupData fabricSetupData)
+        public async Task StepsToIntegrate(CreateConferenceData createConferenceData, FabricSetupData fabricSetupData, SSRCMapData ssrcMapData)
         {
             string authContent = await Authentication();
             string accessToken = DeserializeJson<AuthenticationResponse>(authContent).access_token;
@@ -76,7 +76,7 @@ namespace CallStatsLib
             }
 
             Debug.WriteLine("SSRCMap: ");
-            await SSRCMap();
+            await SSRCMap(ssrcMapData);
 
             Debug.WriteLine("ConferenceStatsSubmission: ");
             await ConferenceStatsSubmission();
@@ -203,25 +203,12 @@ namespace CallStatsLib
         {
             string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setup";
 
-            object data = new
-            {
-                localID = _localID,
-                originID = _originID,
-                deviceID = _deviceID,
-                timestamp = fabricSetupData.timestamp,
-                remoteID = fabricSetupData.remoteID,
-                delay = fabricSetupData.delay,
-                connectionID = _ucID,
-                iceGatheringDelay = fabricSetupData.iceGatheringDelay,
-                iceConnectivityDelay = fabricSetupData.iceConnectivityDelay,
-                fabricTransmissionDirection = fabricSetupData.fabricTransmissionDirection,
-                remoteEndpointType = fabricSetupData.remoteEndpointType,
-                localIceCandidates = fabricSetupData.localIceCandidates,
-                remoteIceCandidates = fabricSetupData.remoteIceCandidates,
-                iceCandidatePairs = fabricSetupData.iceCandidatePairs
-            };
+            fabricSetupData.localID = _localID;
+            fabricSetupData.originID = _originID;
+            fabricSetupData.deviceID = _deviceID;
+            fabricSetupData.connectionID = _ucID;
 
-            string fabricContent = await SendRequest(data, url);
+            string fabricContent = await SendRequest(fabricSetupData, url);
 
             return DeserializeJson<FabricResponse>(fabricContent).status;
         }
@@ -884,37 +871,16 @@ namespace CallStatsLib
             await SendRequest(data, url);
         }
 
-        private async Task SSRCMap()
+        private async Task SSRCMap(SSRCMapData ssrcMapData)
         {
             string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ssrcmap";
 
-            List<object> ssrcDataList = new List<object>();
-            object ssrcData = new
-            {
-                ssrc = "1",
-                cname = "cname",
-                streamType = "inbound",
-                reportType = "local",
-                userID = "userID",
-                msid = "msid",
-                mslabel = "mslabel",
-                label = "label",
-                localStartTime = TimeStamp.Now()
-            };
-            ssrcDataList.Add(ssrcData);
+            ssrcMapData.localID = _localID;
+            ssrcMapData.originID = _originID;
+            ssrcMapData.deviceID = _deviceID;
+            ssrcMapData.connectionID = _ucID;
 
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                connectionID = _ucID,
-                remoteID = "remoteID",
-                ssrcData = ssrcDataList
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(ssrcMapData, url);
         }
 
         public async Task SDPEvent()
