@@ -18,6 +18,9 @@ namespace CallStatsClient
             int rndnum = rnd.Next();
             localSettings.Values["confID"] = rndnum.ToString();
 
+            localSettings.Values["originID"] = "originID";
+            localSettings.Values["deviceID"] = "deviceID";
+
             // privateKey
             localSettings.Values["password"] = "pass";
         }

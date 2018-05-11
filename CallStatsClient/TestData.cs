@@ -6,6 +6,10 @@ namespace CallStatsClient
 {
     public static class TestData
     {
+        private static string _localID = Config.localSettings.Values["localID"].ToString();
+        private static string _originID = Config.localSettings.Values["originID"].ToString();
+        private static string _deviceID = Config.localSettings.Values["deviceID"].ToString();
+
         private enum EndpointInfoType
         {
             browser, native, plugin, middlebox
@@ -14,9 +18,9 @@ namespace CallStatsClient
         public static CreateConferenceData CreateConference()
         {
             CreateConferenceData createConferenceData = new CreateConferenceData();
-            createConferenceData.localID = Config.localSettings.Values["localID"].ToString();
-            createConferenceData.originID = "originID";
-            createConferenceData.deviceID = "deviceID";
+            createConferenceData.localID = _localID;
+            createConferenceData.originID = _originID; 
+            createConferenceData.deviceID = _deviceID;
             createConferenceData.timestamp = TimeStamp.Now();
 
             EndpointInfo endpointInfo = new EndpointInfo();
@@ -35,6 +39,9 @@ namespace CallStatsClient
         public static UserAliveData UserAlive()
         {
             UserAliveData userAliveData = new UserAliveData();
+            userAliveData.localID = _localID;
+            userAliveData.originID = _originID;
+            userAliveData.deviceID = _deviceID;
             userAliveData.timestamp = TimeStamp.Now();
 
             return userAliveData;
@@ -66,12 +73,24 @@ namespace CallStatsClient
             frozen, waiting, inprogress, failed, succeeded, cancelled
         }
 
+        private enum LocalIceCandidateType
+        {
+            localcandidate,
+            // "local-candidate"
+        }
+
+        private enum RemoteIceCandidateType
+        {
+            remotecandidate,
+            // "remote-candidate"
+        }
+
         public static FabricSetupData FabricSetup()
         {
             List<IceCandidate> localIceCandidatesList = new List<IceCandidate>();
             IceCandidate localIceCandidate = new IceCandidate();
             localIceCandidate.id = "1";
-            localIceCandidate.type = "localcandidate";
+            localIceCandidate.type = LocalIceCandidateType.localcandidate.ToString();
             localIceCandidate.ip = "127.0.0.1";
             localIceCandidate.port = 8888;
             localIceCandidate.candidateType = IceCandidateType.host.ToString();
@@ -81,7 +100,7 @@ namespace CallStatsClient
             List<IceCandidate> remoteIceCandidatesList = new List<IceCandidate>();
             IceCandidate remoteIceCandidate = new IceCandidate();
             remoteIceCandidate.id = "2";
-            remoteIceCandidate.type = "remotecandidate";
+            remoteIceCandidate.type = RemoteIceCandidateType.remotecandidate.ToString();
             remoteIceCandidate.ip = "127.0.0.2";
             remoteIceCandidate.port = 8888;
             remoteIceCandidate.candidateType = IceCandidateType.host.ToString();
@@ -99,6 +118,9 @@ namespace CallStatsClient
             iceCandidatePairsList.Add(iceCandidatePair);
 
             FabricSetupData fabricSetupData = new FabricSetupData();
+            fabricSetupData.localID = _localID; 
+            fabricSetupData.originID = _originID; 
+            fabricSetupData.deviceID = _deviceID; 
             fabricSetupData.timestamp = TimeStamp.Now();
             fabricSetupData.remoteID = "remoteID";
             fabricSetupData.delay = 0;
@@ -111,6 +133,30 @@ namespace CallStatsClient
             fabricSetupData.iceCandidatePairs = iceCandidatePairsList;
 
             return fabricSetupData;
+        }
+
+        private enum FabricSetupFailedReason
+        {
+            MediaConfigError, MediaPermissionError, MediaDeviceError,
+            NegotiationFailure, SDPGenerationError, TransportFailure,
+            SignalingError, IceConnectionFailure
+        }
+
+        public static FabricSetupFailedData FabricSetupFailed()
+        {
+            FabricSetupFailedData fabricSetupFailedData = new FabricSetupFailedData();
+            fabricSetupFailedData.localID = _localID;
+            fabricSetupFailedData.originID = _originID;
+            fabricSetupFailedData.deviceID = _deviceID;
+            fabricSetupFailedData.timestamp = TimeStamp.Now();
+            fabricSetupFailedData.fabricTransmissionDirection = FabricTransmissionDirection.sendrecv.ToString();
+            fabricSetupFailedData.remoteEndpointType = RemoteEndpointType.peer.ToString();
+            fabricSetupFailedData.reason = FabricSetupFailedReason.MediaConfigError.ToString();
+            fabricSetupFailedData.name = "name";
+            fabricSetupFailedData.message = "message";
+            fabricSetupFailedData.stack = "stack";
+
+            return fabricSetupFailedData;
         }
 
         private enum StreamType
@@ -145,6 +191,9 @@ namespace CallStatsClient
             ssrcDataList.Add(ssrcData);
 
             SSRCMapData ssrcMapData = new SSRCMapData();
+            ssrcMapData.localID = _localID;
+            ssrcMapData.originID = _originID;
+            ssrcMapData.deviceID = _deviceID;
             ssrcMapData.timestamp = TimeStamp.Now();
             ssrcMapData.remoteID = "remoteID";
             ssrcMapData.ssrcData = ssrcDataList;
@@ -162,6 +211,9 @@ namespace CallStatsClient
             statsList.Add(stats);
 
             ConferenceStatsSubmissionData conferenceStatsSubmissionData = new ConferenceStatsSubmissionData();
+            conferenceStatsSubmissionData.localID = _localID;
+            conferenceStatsSubmissionData.originID = _originID;
+            conferenceStatsSubmissionData.deviceID = _deviceID;
             conferenceStatsSubmissionData.timestamp = TimeStamp.Now();
             conferenceStatsSubmissionData.remoteID = "remoteID";
             conferenceStatsSubmissionData.stats = statsList;
@@ -172,6 +224,9 @@ namespace CallStatsClient
         public static FabricTerminatedData FabricTerminated()
         {
             FabricTerminatedData fabricTerminatedData = new FabricTerminatedData();
+            fabricTerminatedData.localID = _localID;
+            fabricTerminatedData.originID = _originID;
+            fabricTerminatedData.deviceID = _deviceID;
             fabricTerminatedData.timestamp = TimeStamp.Now();
             fabricTerminatedData.remoteID = "remoteID";
 
@@ -181,30 +236,12 @@ namespace CallStatsClient
         public static UserLeftData UserLeft()
         {
             UserLeftData userLeftData = new UserLeftData();
+            userLeftData.localID = _localID;
+            userLeftData.originID = _originID;
+            userLeftData.deviceID = _deviceID;
             userLeftData.timestamp = TimeStamp.Now();
 
             return userLeftData;
-        }
-
-        private enum FabricSetupFailedReason
-        {
-            MediaConfigError, MediaPermissionError, MediaDeviceError,
-            NegotiationFailure, SDPGenerationError, TransportFailure,
-            SignalingError, IceConnectionFailure
-        }
-
-        public static FabricSetupFailedData FabricSetupFailed()
-        {
-            FabricSetupFailedData fabricSetupFailedData = new FabricSetupFailedData();
-            fabricSetupFailedData.timestamp = TimeStamp.Now();
-            fabricSetupFailedData.fabricTransmissionDirection = FabricTransmissionDirection.sendrecv.ToString();
-            fabricSetupFailedData.remoteEndpointType = RemoteEndpointType.peer.ToString();
-            fabricSetupFailedData.reason = FabricSetupFailedReason.MediaConfigError.ToString();
-            fabricSetupFailedData.name = "name";
-            fabricSetupFailedData.message = "message";
-            fabricSetupFailedData.stack = "stack";
-
-            return fabricSetupFailedData;
         }
     }
 }

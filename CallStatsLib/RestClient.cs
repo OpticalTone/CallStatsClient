@@ -12,12 +12,15 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.Linq;
 using CallStatsLib.Request;
+using System.Net;
 
 namespace CallStatsLib
 {
     public class RestClient
     {
         private static readonly HttpClient client = new HttpClient();
+        private static string eventsHost = "events.callstats.io";
+        private static string statsHost = "stats.callstats.io";
 
         private string _localID;
         private string _appID;
@@ -25,8 +28,6 @@ namespace CallStatsLib
         private string _confID;
         private ECDsa _privateKey; 
         private string _ucID;
-        private string _originID;
-        private string _deviceID;
 
         private static readonly string _jti = new Func<string>(() => 
         {
@@ -55,11 +56,9 @@ namespace CallStatsLib
 
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
 
-            _originID = createConferenceData.originID;
-            _deviceID = createConferenceData.deviceID;
-
-            string confContent = await CreateConference(createConferenceData.endpointInfo);
-            _ucID = DeserializeJson<ConferenceResponse>(confContent).ucID;
+            Debug.WriteLine("CreateConference: ");
+            var confContent = await CreateConference(createConferenceData);
+            _ucID = DeserializeJson<ConferenceResponse>(confContent.Item2).ucID;
 
             Timer timer = new Timer(10000);
             timer.Elapsed += async (sender, e) =>
@@ -70,12 +69,12 @@ namespace CallStatsLib
             timer.Start();
 
             Debug.WriteLine("FabricSetup: ");
-            string fabricStatus = await FabricSetup(fabricSetupData);
+            var fabricStatus = await FabricSetup(fabricSetupData);
 
-            if (fabricStatus != "success")
+            if (fabricStatus.Item1 != HttpStatusCode.OK)
             {
                 Debug.WriteLine("FabricSetupFailed: ");
-                fabricStatus = await FabricSetupFailed(fabricSetupFailedData);
+                await FabricSetupFailed(fabricSetupFailedData);
             }
 
             Debug.WriteLine("SSRCMap: ");
@@ -138,30 +137,16 @@ namespace CallStatsLib
 
         #region User Action Events
 
-        private async Task<string> CreateConference(EndpointInfo endpointInfoObj)
+        private async Task<Tuple<HttpStatusCode, string>> CreateConference(CreateConferenceData createConferenceData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}";
-
-            object data = new
-            {
-                localID = _localID,
-                originID = _originID,
-                deviceID = _deviceID,
-                timestamp = TimeStamp.Now(),
-                endpointInfo = endpointInfoObj
-            };
-            return await SendRequest(data, url);
+            return await SendRequest(createConferenceData, UrlBuilder(eventsHost, 
+                $"/v1/apps/{_appID}/conferences/{_confID}"));
         }
 
         private async Task UserAlive(UserAliveData userAliveData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/user/alive";
-
-            userAliveData.localID = _localID;
-            userAliveData.originID = _originID;
-            userAliveData.deviceID = _deviceID;
-
-            await SendRequest(userAliveData, url);
+            await SendRequest(userAliveData, UrlBuilder(eventsHost, 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/user/alive"));
         }
 
         private async Task UserDetails()
@@ -182,56 +167,34 @@ namespace CallStatsLib
 
         public async Task UserLeft(UserLeftData userLeftData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/user/left";
-
-            userLeftData.localID = _localID;
-            userLeftData.originID = _originID;
-            userLeftData.deviceID = _deviceID;
-
-            await SendRequest(userLeftData, url);
+            await SendRequest(userLeftData, UrlBuilder(eventsHost, 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/user/left"));
         }
 
         #endregion
 
         #region Fabric Events 
 
-        public async Task<string> FabricSetup(FabricSetupData fabricSetupData)
+        public async Task<Tuple<HttpStatusCode, string>> FabricSetup(FabricSetupData fabricSetupData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setup";
-
-            fabricSetupData.localID = _localID;
-            fabricSetupData.originID = _originID;
-            fabricSetupData.deviceID = _deviceID;
             fabricSetupData.connectionID = _ucID;
 
-            string fabricContent = await SendRequest(fabricSetupData, url);
-
-            return DeserializeJson<FabricResponse>(fabricContent).status;
+            return await SendRequest(fabricSetupData, UrlBuilder(eventsHost, 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setup")); 
         }
 
-        public async Task<string> FabricSetupFailed(FabricSetupFailedData fabricSetupFailedData)
+        public async Task<Tuple<HttpStatusCode, string>> FabricSetupFailed(FabricSetupFailedData fabricSetupFailedData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setupfailed";
-
-            fabricSetupFailedData.localID = _localID;
-            fabricSetupFailedData.originID = _originID;
-            fabricSetupFailedData.deviceID = _deviceID;
-
-            string fabricContent = await SendRequest(fabricSetupFailedData, url);
-
-            return DeserializeJson<FabricResponse>(fabricContent).status;
+            return await SendRequest(fabricSetupFailedData, UrlBuilder(eventsHost, 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setupfailed"));
         }
 
         public async Task FabricTerminated(FabricTerminatedData fabricTerminatedData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/terminated";
-
-            fabricTerminatedData.localID = _localID;
-            fabricTerminatedData.originID = _originID;
-            fabricTerminatedData.deviceID = _deviceID;
             fabricTerminatedData.connectionID = _ucID;
 
-            await SendRequest(fabricTerminatedData, url);
+            await SendRequest(fabricTerminatedData, UrlBuilder(eventsHost, 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/terminated"));
         }
 
         public async Task FabricStateChange()
@@ -358,14 +321,10 @@ namespace CallStatsLib
 
         public async Task ConferenceStatsSubmission(ConferenceStatsSubmissionData conferenceStatsSubmissionData)
         {
-            var url = $"https://stats.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/stats";
-
-            conferenceStatsSubmissionData.localID = _localID;
-            conferenceStatsSubmissionData.originID = _originID;
-            conferenceStatsSubmissionData.deviceID = _deviceID;
             conferenceStatsSubmissionData.connectionID = _ucID;
 
-            await SendRequest(conferenceStatsSubmissionData, url);
+            await SendRequest(conferenceStatsSubmissionData, UrlBuilder(statsHost, 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/stats"));
         }
 
         public async Task SystemStatusStatsSubmission()
@@ -840,14 +799,10 @@ namespace CallStatsLib
 
         private async Task SSRCMap(SSRCMapData ssrcMapData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ssrcmap";
-
-            ssrcMapData.localID = _localID;
-            ssrcMapData.originID = _originID;
-            ssrcMapData.deviceID = _deviceID;
             ssrcMapData.connectionID = _ucID;
 
-            await SendRequest(ssrcMapData, url);
+            await SendRequest(ssrcMapData, UrlBuilder(eventsHost, 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ssrcmap"));
         }
 
         public async Task SDPEvent()
@@ -922,7 +877,7 @@ namespace CallStatsLib
 
         #endregion
 
-        private async Task<string> SendRequest(object data, string url)
+        private async Task<Tuple<HttpStatusCode, string>> SendRequest(object data, string url)
         {
             string dataContent = JsonConvert.SerializeObject(data);
 
@@ -938,16 +893,23 @@ namespace CallStatsLib
 
             HttpResponseMessage res = await client.SendAsync(req);
 
+            HttpStatusCode statusCode = res.StatusCode;
             string content = await res.Content.ReadAsStringAsync();
 
+            Debug.WriteLine($"SendRequest statusCode: {statusCode}");
             Debug.WriteLine($"SendRequest content: {content}");
 
-            return content;
+            return Tuple.Create(statusCode, content);
         }
 
         private T DeserializeJson<T>(string json)
         {
             return JsonConvert.DeserializeObject<T>(json);
+        }
+
+        private string UrlBuilder(string host, string endpoint)
+        {
+            return $"https://{host + endpoint}";
         }
     }
 }
