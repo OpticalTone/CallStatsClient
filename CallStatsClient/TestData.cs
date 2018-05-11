@@ -243,5 +243,17 @@ namespace CallStatsClient
 
             return userLeftData;
         }
+
+        public static UserDetailsData UserDetails()
+        {
+            UserDetailsData userDetailsData = new UserDetailsData();
+            userDetailsData.localID = _localID;
+            userDetailsData.originID = _originID;
+            userDetailsData.deviceID = _deviceID;
+            userDetailsData.timestamp = TimeStamp.Now();
+            userDetailsData.userName = "userName";
+
+            return userDetailsData;
+        }
     }
 }

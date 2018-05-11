@@ -18,9 +18,14 @@ namespace CallStatsLib
 {
     public class RestClient
     {
-        private static readonly HttpClient client = new HttpClient();
-        private static string eventsHost = "events.callstats.io";
-        private static string statsHost = "stats.callstats.io";
+        private static readonly HttpClient _client = new HttpClient();
+        private static string _domain = "callstats.io";
+        private enum Host
+        {
+            auth,
+            events,
+            stats
+        }
 
         private string _localID;
         private string _appID;
@@ -54,7 +59,7 @@ namespace CallStatsLib
             string authContent = await Authentication();
             string accessToken = DeserializeJson<AuthenticationResponse>(authContent).access_token;
 
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
 
             Debug.WriteLine("CreateConference: ");
             var confContent = await CreateConference(createConferenceData);
@@ -101,12 +106,12 @@ namespace CallStatsLib
                 { "client_id", _localID + "@" + _appID }
             };
 
-            string url = "https://auth.callstats.io/authenticate";
+            HttpRequestMessage req = 
+                new HttpRequestMessage(HttpMethod.Post, UrlBuilder(Host.auth.ToString(), "/authenticate"));
 
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, url);
             req.Content = new FormUrlEncodedContent(values);
 
-            HttpResponseMessage res = await client.SendAsync(req);
+            HttpResponseMessage res = await _client.SendAsync(req);
 
             return await res.Content.ReadAsStringAsync();
         }
@@ -139,35 +144,25 @@ namespace CallStatsLib
 
         private async Task<Tuple<HttpStatusCode, string>> CreateConference(CreateConferenceData createConferenceData)
         {
-            return await SendRequest(createConferenceData, UrlBuilder(eventsHost, 
+            return await SendRequest(createConferenceData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}"));
         }
 
         private async Task UserAlive(UserAliveData userAliveData)
         {
-            await SendRequest(userAliveData, UrlBuilder(eventsHost, 
+            await SendRequest(userAliveData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/user/alive"));
         }
 
-        private async Task UserDetails()
+        public async Task UserDetails(UserDetailsData userDetailsData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/userdetails";
-
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                userName = "userName"
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(userDetailsData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/userdetails"));
         }
 
         public async Task UserLeft(UserLeftData userLeftData)
         {
-            await SendRequest(userLeftData, UrlBuilder(eventsHost, 
+            await SendRequest(userLeftData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/user/left"));
         }
 
@@ -179,13 +174,13 @@ namespace CallStatsLib
         {
             fabricSetupData.connectionID = _ucID;
 
-            return await SendRequest(fabricSetupData, UrlBuilder(eventsHost, 
+            return await SendRequest(fabricSetupData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setup")); 
         }
 
         public async Task<Tuple<HttpStatusCode, string>> FabricSetupFailed(FabricSetupFailedData fabricSetupFailedData)
         {
-            return await SendRequest(fabricSetupFailedData, UrlBuilder(eventsHost, 
+            return await SendRequest(fabricSetupFailedData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setupfailed"));
         }
 
@@ -193,7 +188,7 @@ namespace CallStatsLib
         {
             fabricTerminatedData.connectionID = _ucID;
 
-            await SendRequest(fabricTerminatedData, UrlBuilder(eventsHost, 
+            await SendRequest(fabricTerminatedData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/terminated"));
         }
 
@@ -323,7 +318,7 @@ namespace CallStatsLib
         {
             conferenceStatsSubmissionData.connectionID = _ucID;
 
-            await SendRequest(conferenceStatsSubmissionData, UrlBuilder(statsHost, 
+            await SendRequest(conferenceStatsSubmissionData, UrlBuilder(Host.stats.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/stats"));
         }
 
@@ -801,7 +796,7 @@ namespace CallStatsLib
         {
             ssrcMapData.connectionID = _ucID;
 
-            await SendRequest(ssrcMapData, UrlBuilder(eventsHost, 
+            await SendRequest(ssrcMapData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ssrcmap"));
         }
 
@@ -891,7 +886,7 @@ namespace CallStatsLib
 
             req.Content = byteContent;
 
-            HttpResponseMessage res = await client.SendAsync(req);
+            HttpResponseMessage res = await _client.SendAsync(req);
 
             HttpStatusCode statusCode = res.StatusCode;
             string content = await res.Content.ReadAsStringAsync();
@@ -909,7 +904,7 @@ namespace CallStatsLib
 
         private string UrlBuilder(string host, string endpoint)
         {
-            return $"https://{host + endpoint}";
+            return $"https://{host}.{_domain}{endpoint}";
         }
     }
 }

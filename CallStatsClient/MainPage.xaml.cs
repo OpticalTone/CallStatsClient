@@ -2,6 +2,7 @@
 using CallStatsLib.Request;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -55,6 +56,9 @@ namespace CallStatsClient
                                            TestData.ConferenceStatsSubmission(),
                                            TestData.FabricTerminated(),
                                            TestData.UserLeft());
+
+            Debug.WriteLine("UserDetails: ");
+            await rClient.UserDetails(TestData.UserDetails());
         }
     }
 }

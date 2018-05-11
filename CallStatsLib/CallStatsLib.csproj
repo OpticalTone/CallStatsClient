@@ -113,6 +113,7 @@
     <Compile Include="Request\FabricTerminatedData.cs" />
     <Compile Include="Request\SSRCMapData.cs" />
     <Compile Include="Request\UserAliveData.cs" />
+    <Compile Include="Request\UserDetailsData.cs" />
     <Compile Include="Request\UserLeftData.cs" />
     <Compile Include="Responses\AuthenticationResponse.cs" />
     <Compile Include="Responses\ConferenceResponse.cs" />
