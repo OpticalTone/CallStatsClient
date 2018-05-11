@@ -108,6 +108,7 @@
   <ItemGroup>
     <Compile Include="Request\ConferenceStatsSubmissionData.cs" />
     <Compile Include="Request\CreateConferenceData.cs" />
+    <Compile Include="Request\FabricActionData.cs" />
     <Compile Include="Request\FabricDroppedData.cs" />
     <Compile Include="Request\FabricSetupData.cs" />
     <Compile Include="Request\FabricSetupFailedData.cs" />

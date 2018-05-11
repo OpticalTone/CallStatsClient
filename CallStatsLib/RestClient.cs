@@ -216,22 +216,12 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/status"));
         }
 
-        public async Task FabricAction()
+        public async Task FabricAction(FabricActionData fabricActionData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/actions";
+            fabricActionData.connectionID = _ucID;
 
-            object data = new
-            {
-                eventType = "fabricHold",
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                remoteID = "remoteID",
-                connectionID = _ucID
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(fabricActionData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/actions"));
         }
 
         #endregion

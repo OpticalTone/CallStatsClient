@@ -358,5 +358,23 @@ namespace CallStatsClient
 
             return fabricDroppedData;
         }
+
+        private enum EventType
+        {
+            fabricHold, fabricResume
+        }
+
+        public static FabricActionData FabricAction()
+        {
+            FabricActionData fabricActionData = new FabricActionData();
+            fabricActionData.eventType = EventType.fabricHold.ToString();
+            fabricActionData.localID = _localID;
+            fabricActionData.originID = _originID;
+            fabricActionData.deviceID = _deviceID;
+            fabricActionData.timestamp = TimeStamp.Now();
+            fabricActionData.remoteID = "remoteID";
+
+            return fabricActionData;
+        }
     }
 }

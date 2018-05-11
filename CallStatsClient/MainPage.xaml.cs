@@ -68,6 +68,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("FabricDropped: ");
             await rClient.FabricDropped(TestData.FabricDropped());
+
+            Debug.WriteLine("FabricAction: ");
+            await rClient.FabricAction(TestData.FabricAction());
         }
     }
 }
