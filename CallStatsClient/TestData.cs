@@ -255,5 +255,47 @@ namespace CallStatsClient
 
             return userDetailsData;
         }
+
+        private enum StateChange
+        {
+            stable,
+            //"have-local-offer",
+            //"have-remote-offer",
+            //"have-local-pranswer",
+            //"have-remote-pranswer",
+            closed,
+            //"new",
+            connecting,
+            connected,
+            disconnected,
+            failed,
+            checking,
+            completed,
+            gathering,
+            complete
+        }
+
+        private enum ChangedState
+        {
+            signalingState,
+            connectionState,
+            iceConnectionState,
+            iceGatheringState
+        }
+
+        public static FabricStateChangeData FabricStateChange()
+        {
+            FabricStateChangeData fabricStateChangeData = new FabricStateChangeData();
+            fabricStateChangeData.localID = _localID;
+            fabricStateChangeData.originID = _originID;
+            fabricStateChangeData.deviceID = _deviceID;
+            fabricStateChangeData.timestamp = TimeStamp.Now();
+            fabricStateChangeData.remoteID = "remoteID";
+            fabricStateChangeData.prevState = StateChange.stable.ToString();
+            fabricStateChangeData.newState = StateChange.closed.ToString();
+            fabricStateChangeData.changedState = ChangedState.signalingState.ToString();
+
+            return fabricStateChangeData;
+        }
     }
 }

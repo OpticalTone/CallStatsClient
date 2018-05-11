@@ -110,6 +110,7 @@
     <Compile Include="Request\CreateConferenceData.cs" />
     <Compile Include="Request\FabricSetupData.cs" />
     <Compile Include="Request\FabricSetupFailedData.cs" />
+    <Compile Include="Request\FabricStateChangeData.cs" />
     <Compile Include="Request\FabricTerminatedData.cs" />
     <Compile Include="Request\SSRCMapData.cs" />
     <Compile Include="Request\UserAliveData.cs" />

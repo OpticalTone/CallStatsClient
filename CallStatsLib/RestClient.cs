@@ -192,24 +192,12 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/terminated"));
         }
 
-        public async Task FabricStateChange()
+        public async Task FabricStateChange(FabricStateChangeData fabricStateChangeData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/statechange";
+            fabricStateChangeData.connectionID = _ucID;
 
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                remoteID = "remoteID",
-                connectionID = _ucID,
-                prevState = "stable",
-                newState = "have-local-offer",
-                changedState = "signalingState"
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(fabricStateChangeData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/statechange"));
         }
 
         public async Task FabricTransportChange()

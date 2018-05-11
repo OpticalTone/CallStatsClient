@@ -59,6 +59,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("UserDetails: ");
             await rClient.UserDetails(TestData.UserDetails());
+
+            Debug.WriteLine("FabricStateChange: ");
+            await rClient.FabricStateChange(TestData.FabricStateChange());
         }
     }
 }
