@@ -277,10 +277,8 @@ namespace CallStatsClient
 
         private enum ChangedState
         {
-            signalingState,
-            connectionState,
-            iceConnectionState,
-            iceGatheringState
+            signalingState, connectionState,
+            iceConnectionState, iceGatheringState
         }
 
         public static FabricStateChangeData FabricStateChange()
@@ -296,6 +294,50 @@ namespace CallStatsClient
             fabricStateChangeData.changedState = ChangedState.signalingState.ToString();
 
             return fabricStateChangeData;
+        }
+
+        private enum TransportChangeState
+        {
+            frozen, waiting, inprogress, failed, succeeded, cancelled
+        }
+
+        private enum ConnectionState
+        {
+            connected, completed
+        }
+
+        public static FabricTransportChangeData FabricTransportChange()
+        {
+            IceCandidatePair currIceCandidatePairObj = new IceCandidatePair();
+            currIceCandidatePairObj.id = "4";
+            currIceCandidatePairObj.localCandidateId = "1";
+            currIceCandidatePairObj.remoteCandidateId = "2";
+            currIceCandidatePairObj.state = TransportChangeState.succeeded.ToString();
+            currIceCandidatePairObj.priority = 1;
+            currIceCandidatePairObj.nominated = true;
+
+            IceCandidatePair prevIceCandidatePairObj = new IceCandidatePair();
+            prevIceCandidatePairObj.id = "6";
+            prevIceCandidatePairObj.localCandidateId = "7";
+            prevIceCandidatePairObj.remoteCandidateId = "8";
+            prevIceCandidatePairObj.state = TransportChangeState.failed.ToString();
+            prevIceCandidatePairObj.priority = 1;
+            prevIceCandidatePairObj.nominated = true;
+
+            FabricTransportChangeData fabricTransportChangeData = new FabricTransportChangeData();
+            fabricTransportChangeData.localID = _localID;
+            fabricTransportChangeData.originID = _originID;
+            fabricTransportChangeData.deviceID = _deviceID;
+            fabricTransportChangeData.timestamp = TimeStamp.Now();
+            fabricTransportChangeData.remoteID = "remoteID";
+            fabricTransportChangeData.currIceCandidatePair = currIceCandidatePairObj;
+            fabricTransportChangeData.prevIceCandidatePair = prevIceCandidatePairObj;
+            fabricTransportChangeData.currIceConnectionState = ConnectionState.completed.ToString();
+            fabricTransportChangeData.prevIceConnectionState = ConnectionState.connected.ToString();
+            fabricTransportChangeData.delay = 0;
+            fabricTransportChangeData.relayType = "turn/tcp"; // "turn/udp" "turn/tcp" "turn/tls"
+
+            return fabricTransportChangeData;
         }
     }
 }

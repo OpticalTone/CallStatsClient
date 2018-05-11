@@ -112,6 +112,9 @@
     <Compile Include="Request\FabricSetupFailedData.cs" />
     <Compile Include="Request\FabricStateChangeData.cs" />
     <Compile Include="Request\FabricTerminatedData.cs" />
+    <Compile Include="Request\FabricTransportChangeData.cs" />
+    <Compile Include="Request\IceCandidate.cs" />
+    <Compile Include="Request\IceCandidatePair.cs" />
     <Compile Include="Request\SSRCMapData.cs" />
     <Compile Include="Request\UserAliveData.cs" />
     <Compile Include="Request\UserDetailsData.cs" />

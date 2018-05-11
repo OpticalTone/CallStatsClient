@@ -19,24 +19,4 @@ namespace CallStatsLib.Request
         public List<IceCandidate> remoteIceCandidates { get; set; }
         public List<IceCandidatePair> iceCandidatePairs { get; set; }
     }
-
-    public class IceCandidate
-    {
-        public string id { get; set; }
-        public string type { get; set; }
-        public string ip { get; set; }
-        public int port { get; set; }
-        public string candidateType { get; set; }
-        public string transport { get; set; }
-    }
-
-    public class IceCandidatePair
-    {
-        public string id { get; set; }
-        public string localCandidateId { get; set; }
-        public string remoteCandidateId { get; set; }
-        public string state { get; set; }
-        public int priority { get; set; }
-        public bool nominated { get; set; }
-    }
 }
