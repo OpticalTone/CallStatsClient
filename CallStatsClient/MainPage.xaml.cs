@@ -65,6 +65,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("FabricTransportChange: ");
             await rClient.FabricTransportChange(TestData.FabricTransportChange());
+
+            Debug.WriteLine("FabricDropped: ");
+            await rClient.FabricDropped(TestData.FabricDropped());
         }
     }
 }

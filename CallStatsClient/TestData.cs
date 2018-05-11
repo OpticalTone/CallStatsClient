@@ -296,11 +296,6 @@ namespace CallStatsClient
             return fabricStateChangeData;
         }
 
-        private enum TransportChangeState
-        {
-            frozen, waiting, inprogress, failed, succeeded, cancelled
-        }
-
         private enum ConnectionState
         {
             connected, completed
@@ -312,7 +307,7 @@ namespace CallStatsClient
             currIceCandidatePairObj.id = "4";
             currIceCandidatePairObj.localCandidateId = "1";
             currIceCandidatePairObj.remoteCandidateId = "2";
-            currIceCandidatePairObj.state = TransportChangeState.succeeded.ToString();
+            currIceCandidatePairObj.state = IceCandidateState.succeeded.ToString();
             currIceCandidatePairObj.priority = 1;
             currIceCandidatePairObj.nominated = true;
 
@@ -320,7 +315,7 @@ namespace CallStatsClient
             prevIceCandidatePairObj.id = "6";
             prevIceCandidatePairObj.localCandidateId = "7";
             prevIceCandidatePairObj.remoteCandidateId = "8";
-            prevIceCandidatePairObj.state = TransportChangeState.failed.ToString();
+            prevIceCandidatePairObj.state = IceCandidateState.failed.ToString();
             prevIceCandidatePairObj.priority = 1;
             prevIceCandidatePairObj.nominated = true;
 
@@ -338,6 +333,30 @@ namespace CallStatsClient
             fabricTransportChangeData.relayType = "turn/tcp"; // "turn/udp" "turn/tcp" "turn/tls"
 
             return fabricTransportChangeData;
+        }
+
+        public static FabricDroppedData FabricDropped()
+        {
+            IceCandidatePair currIceCandidatePairObj = new IceCandidatePair();
+            currIceCandidatePairObj.id = "4";
+            currIceCandidatePairObj.localCandidateId = "1";
+            currIceCandidatePairObj.remoteCandidateId = "2";
+            currIceCandidatePairObj.state = IceCandidateState.succeeded.ToString();
+            currIceCandidatePairObj.priority = 4;
+            currIceCandidatePairObj.nominated = true;
+
+            FabricDroppedData fabricDroppedData = new FabricDroppedData();
+            fabricDroppedData.localID = _localID;
+            fabricDroppedData.originID = _originID;
+            fabricDroppedData.deviceID = _deviceID;
+            fabricDroppedData.timestamp = TimeStamp.Now();
+            fabricDroppedData.remoteID = "remoteID";
+            fabricDroppedData.currIceCandidatePair = currIceCandidatePairObj;
+            fabricDroppedData.currIceConnectionState = "failed";
+            fabricDroppedData.prevIceConnectionState = "disconnected";
+            fabricDroppedData.delay = 0;
+
+            return fabricDroppedData;
         }
     }
 }

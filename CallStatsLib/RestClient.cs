@@ -208,37 +208,12 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/transportchange"));
         }
 
-        public async Task FabricDropped()
+        public async Task FabricDropped(FabricDroppedData fabricDroppedData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/status";
+            fabricDroppedData.connectionID = _ucID;
 
-            List<object> currIceCandidatePairList = new List<object>();
-            object currIceCandidateObj = new
-            {
-                id = "4",
-                localCandidateId = "1",
-                remoteCandidateId = "2",
-                state = "frozen",
-                priority = 1,
-                nominated = true
-            };
-            currIceCandidatePairList.Add(currIceCandidateObj);
-
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                remoteID = "remoteID",
-                connectionID = _ucID,
-                currIceCandidatePair = currIceCandidatePairList,
-                currIceConnectionState = "failed",
-                prevIceConnectionState = "disconnected",
-                delay = 0
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(fabricDroppedData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/status"));
         }
 
         public async Task FabricAction()
