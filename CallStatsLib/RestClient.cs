@@ -254,51 +254,12 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
-        public async Task IceDisruptionEnd()
+        public async Task IceDisruptionEnd(IceDisruptionEndData iceDisruptionEndData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";
+            iceDisruptionEndData.connectionID = _ucID;
 
-            List<object> currIceCandidatePairList = new List<object>();
-            object currIceCandidateObj = new
-            {
-                id = "4",
-                localCandidateId = "1",
-                remoteCandidateId = "2",
-                state = "frozen",
-                priority = 1,
-                nominated = true
-            };
-            currIceCandidatePairList.Add(currIceCandidateObj);
-
-            List<object> prevIceCandidatePairList = new List<object>();
-            object prevIceCandidatePairObj = new
-            {
-                id = "0",
-                localCandidateId = "0",
-                remoteCandidateId = "0",
-                state = "frozen",
-                priority = 1,
-                nominated = true
-            };
-            prevIceCandidatePairList.Add(prevIceCandidatePairObj);
-
-            object data = new
-            {
-                eventType = "iceDisruptionStart",
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                remoteID = "remoteID",
-                connectionID = _ucID,
-                currIceCandidatePair = currIceCandidatePairList,
-                prevIceCandidatePair = prevIceCandidatePairList,
-                currIceConnectionState = "connected",
-                prevIceConnectionState = "disconnected",
-                delay = 0
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(iceDisruptionEndData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceRestart()

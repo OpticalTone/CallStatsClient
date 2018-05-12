@@ -416,5 +416,44 @@ namespace CallStatsClient
 
             return iceDisruptionStartData;
         }
+
+        private enum IceConnectionState
+        {
+            connected, completed, checking
+        }
+
+        public static IceDisruptionEndData IceDisruptionEnd()
+        {
+            IceCandidatePair currIceCandidatePairObj = new IceCandidatePair();
+            currIceCandidatePairObj.id = "4";
+            currIceCandidatePairObj.localCandidateId = "1";
+            currIceCandidatePairObj.remoteCandidateId = "2";
+            currIceCandidatePairObj.state = IceCandidateState.inprogress.ToString();
+            currIceCandidatePairObj.priority = 1;
+            currIceCandidatePairObj.nominated = true;
+
+            IceCandidatePair prevIceCandidatePairObj = new IceCandidatePair();
+            prevIceCandidatePairObj.id = "0";
+            prevIceCandidatePairObj.localCandidateId = "0";
+            prevIceCandidatePairObj.remoteCandidateId = "0";
+            prevIceCandidatePairObj.state = IceCandidateState.frozen.ToString();
+            prevIceCandidatePairObj.priority = 2;
+            prevIceCandidatePairObj.nominated = false;
+
+            IceDisruptionEndData iceDisruptionEndData = new IceDisruptionEndData();
+            iceDisruptionEndData.eventType = "iceDisruptionEnd";
+            iceDisruptionEndData.localID = _localID;
+            iceDisruptionEndData.originID = _originID;
+            iceDisruptionEndData.deviceID = _deviceID;
+            iceDisruptionEndData.timestamp = TimeStamp.Now();
+            iceDisruptionEndData.remoteID = "remoteID";
+            iceDisruptionEndData.currIceCandidatePair = currIceCandidatePairObj;
+            iceDisruptionEndData.prevIceCandidatePair = prevIceCandidatePairObj;
+            iceDisruptionEndData.currIceConnectionState = IceConnectionState.checking.ToString();
+            iceDisruptionEndData.prevIceConnectionState = "disconnected";
+            iceDisruptionEndData.delay = 2;
+
+            return iceDisruptionEndData;
+        }
     }
 }

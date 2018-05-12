@@ -117,6 +117,7 @@
     <Compile Include="Request\FabricTransportChangeData.cs" />
     <Compile Include="Request\IceCandidate.cs" />
     <Compile Include="Request\IceCandidatePair.cs" />
+    <Compile Include="Request\IceDisruptionEndData.cs" />
     <Compile Include="Request\IceDisruptionStartData.cs" />
     <Compile Include="Request\SSRCMapData.cs" />
     <Compile Include="Request\SystemStatusStatsSubmissionData.cs" />
