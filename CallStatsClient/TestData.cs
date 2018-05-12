@@ -88,34 +88,34 @@ namespace CallStatsClient
         public static FabricSetupData FabricSetup()
         {
             List<IceCandidate> localIceCandidatesList = new List<IceCandidate>();
-            IceCandidate localIceCandidate = new IceCandidate();
-            localIceCandidate.id = "1";
-            localIceCandidate.type = LocalIceCandidateType.localcandidate.ToString();
-            localIceCandidate.ip = "127.0.0.1";
-            localIceCandidate.port = 8888;
-            localIceCandidate.candidateType = IceCandidateType.host.ToString();
-            localIceCandidate.transport = IceCandidateTransport.tcp.ToString();
-            localIceCandidatesList.Add(localIceCandidate);
+            IceCandidate localIceCandidateObj = new IceCandidate();
+            localIceCandidateObj.id = "1";
+            localIceCandidateObj.type = LocalIceCandidateType.localcandidate.ToString();
+            localIceCandidateObj.ip = "127.0.0.1";
+            localIceCandidateObj.port = 8888;
+            localIceCandidateObj.candidateType = IceCandidateType.host.ToString();
+            localIceCandidateObj.transport = IceCandidateTransport.tcp.ToString();
+            localIceCandidatesList.Add(localIceCandidateObj);
 
             List<IceCandidate> remoteIceCandidatesList = new List<IceCandidate>();
-            IceCandidate remoteIceCandidate = new IceCandidate();
-            remoteIceCandidate.id = "2";
-            remoteIceCandidate.type = RemoteIceCandidateType.remotecandidate.ToString();
-            remoteIceCandidate.ip = "127.0.0.2";
-            remoteIceCandidate.port = 8888;
-            remoteIceCandidate.candidateType = IceCandidateType.host.ToString();
-            remoteIceCandidate.transport = IceCandidateTransport.tcp.ToString();
-            remoteIceCandidatesList.Add(remoteIceCandidate);
+            IceCandidate remoteIceCandidateObj = new IceCandidate();
+            remoteIceCandidateObj.id = "2";
+            remoteIceCandidateObj.type = RemoteIceCandidateType.remotecandidate.ToString();
+            remoteIceCandidateObj.ip = "127.0.0.2";
+            remoteIceCandidateObj.port = 8888;
+            remoteIceCandidateObj.candidateType = IceCandidateType.host.ToString();
+            remoteIceCandidateObj.transport = IceCandidateTransport.tcp.ToString();
+            remoteIceCandidatesList.Add(remoteIceCandidateObj);
 
             List<IceCandidatePair> iceCandidatePairsList = new List<IceCandidatePair>();
-            IceCandidatePair iceCandidatePair = new IceCandidatePair();
-            iceCandidatePair.id = "3";
-            iceCandidatePair.localCandidateId = "1";
-            iceCandidatePair.remoteCandidateId = "2";
-            iceCandidatePair.state = IceCandidateState.succeeded.ToString();
-            iceCandidatePair.priority = 1;
-            iceCandidatePair.nominated = true;
-            iceCandidatePairsList.Add(iceCandidatePair);
+            IceCandidatePair iceCandidatePairObj = new IceCandidatePair();
+            iceCandidatePairObj.id = "3";
+            iceCandidatePairObj.localCandidateId = "1";
+            iceCandidatePairObj.remoteCandidateId = "2";
+            iceCandidatePairObj.state = IceCandidateState.succeeded.ToString();
+            iceCandidatePairObj.priority = 1;
+            iceCandidatePairObj.nominated = true;
+            iceCandidatePairsList.Add(iceCandidatePairObj);
 
             FabricSetupData fabricSetupData = new FabricSetupData();
             fabricSetupData.localID = _localID; 
@@ -484,6 +484,60 @@ namespace CallStatsClient
             iceRestartData.prevIceConnectionState = IceRestartConnectionState.checking.ToString();
 
             return iceRestartData;
+        }
+
+        private enum IceFailedConnectionState
+        {
+            checking, disconnected
+        }
+
+        public static IceFailedData IceFailed()
+        {
+            List<IceCandidate> localIceCandidatesList = new List<IceCandidate>();
+            IceCandidate localIceCandidatesObj = new IceCandidate();
+            localIceCandidatesObj.id = "1";
+            localIceCandidatesObj.type = LocalIceCandidateType.localcandidate.ToString();
+            localIceCandidatesObj.ip = "127.0.0.1";
+            localIceCandidatesObj.port = 8888;
+            localIceCandidatesObj.candidateType = IceCandidateType.host.ToString();
+            localIceCandidatesObj.transport = IceCandidateTransport.tcp.ToString();
+            localIceCandidatesList.Add(localIceCandidatesObj);
+
+            List<IceCandidate> remoteIceCandidatesList = new List<IceCandidate>();
+            IceCandidate remoteIceCandidatesObj = new IceCandidate();
+            remoteIceCandidatesObj.id = "2";
+            remoteIceCandidatesObj.type = RemoteIceCandidateType.remotecandidate.ToString();  //LocalIceCandidateType.localcandidate.ToString();
+            remoteIceCandidatesObj.ip = "127.0.0.2";
+            remoteIceCandidatesObj.port = 8888;
+            remoteIceCandidatesObj.candidateType = IceCandidateType.host.ToString();
+            remoteIceCandidatesObj.transport = IceCandidateTransport.tcp.ToString();
+            localIceCandidatesList.Add(remoteIceCandidatesObj);
+
+            List<IceCandidatePair> iceCandidatePairsList = new List<IceCandidatePair>();
+            IceCandidatePair iceCandidatePairObj = new IceCandidatePair();
+            iceCandidatePairObj.id = "3";
+            iceCandidatePairObj.localCandidateId = "1";
+            iceCandidatePairObj.remoteCandidateId = "2";
+            iceCandidatePairObj.state = IceCandidateState.failed.ToString();
+            iceCandidatePairObj.priority = 2;
+            iceCandidatePairObj.nominated = true;
+            iceCandidatePairsList.Add(iceCandidatePairObj);
+
+            IceFailedData iceFailedData = new IceFailedData();
+            iceFailedData.eventType = "iceFailed";
+            iceFailedData.localID = _localID;
+            iceFailedData.originID = _originID;
+            iceFailedData.deviceID = _deviceID;
+            iceFailedData.timestamp = TimeStamp.Now();
+            iceFailedData.remoteID = "remoteID";
+            iceFailedData.localIceCandidates = localIceCandidatesList;
+            iceFailedData.remoteIceCandidates = remoteIceCandidatesList;
+            iceFailedData.iceCandidatePairs = iceCandidatePairsList;
+            iceFailedData.currIceConnectionState = "failed";
+            iceFailedData.prevIceConnectionState = IceFailedConnectionState.disconnected.ToString();
+            iceFailedData.delay = 2;
+
+            return iceFailedData;
         }
     }
 }

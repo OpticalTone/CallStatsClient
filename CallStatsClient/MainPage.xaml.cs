@@ -83,6 +83,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("IceRestart: ");
             await rClient.IceRestart(TestData.IceRestart());
+
+            Debug.WriteLine("IceFailed: ");
+            await rClient.IceFailed(TestData.IceFailed());
         }
     }
 }
