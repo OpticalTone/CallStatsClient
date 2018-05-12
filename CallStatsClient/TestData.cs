@@ -377,7 +377,7 @@ namespace CallStatsClient
             return fabricActionData;
         }
 
-        public static SystemStatusStatsSubmissionData SystemStatusStatsSubmission()
+        public static SystemStatusStatsSubmissionData SystemStatusStatsSubmission() // statusCode: MethodNotAllowed
         {
             SystemStatusStatsSubmissionData systemStatusStatsSubmissionData = new SystemStatusStatsSubmissionData();
             systemStatusStatsSubmissionData.localID = _localID;
@@ -506,7 +506,7 @@ namespace CallStatsClient
             List<IceCandidate> remoteIceCandidatesList = new List<IceCandidate>();
             IceCandidate remoteIceCandidatesObj = new IceCandidate();
             remoteIceCandidatesObj.id = "2";
-            remoteIceCandidatesObj.type = RemoteIceCandidateType.remotecandidate.ToString();  //LocalIceCandidateType.localcandidate.ToString();
+            remoteIceCandidatesObj.type = LocalIceCandidateType.localcandidate.ToString(); // Documentation: RemoteIceCandidateType.remotecandidate.ToString(); 
             remoteIceCandidatesObj.ip = "127.0.0.2";
             remoteIceCandidatesObj.port = 8888;
             remoteIceCandidatesObj.candidateType = IceCandidateType.host.ToString();
@@ -538,6 +538,60 @@ namespace CallStatsClient
             iceFailedData.delay = 2;
 
             return iceFailedData;
+        }
+
+        private enum IceAbortedConnectionState
+        {
+            checking, //"new"
+    }
+
+        public static IceAbortedData IceAborted()
+        {
+            List<IceCandidate> localIceCandidatesList = new List<IceCandidate>();
+            IceCandidate localIceCandidatesObj = new IceCandidate();
+            localIceCandidatesObj.id = "1";
+            localIceCandidatesObj.type = LocalIceCandidateType.localcandidate.ToString();
+            localIceCandidatesObj.ip = "127.0.0.1";
+            localIceCandidatesObj.port = 8888;
+            localIceCandidatesObj.candidateType = IceCandidateType.host.ToString();
+            localIceCandidatesObj.transport = IceCandidateTransport.tcp.ToString();
+            localIceCandidatesList.Add(localIceCandidatesObj);
+
+            List<IceCandidate> remoteIceCandidatesList = new List<IceCandidate>();
+            IceCandidate remoteIceCandidatesObj = new IceCandidate();
+            remoteIceCandidatesObj.id = "2";
+            remoteIceCandidatesObj.type = LocalIceCandidateType.localcandidate.ToString(); // Documentation: RemoteIceCandidateType.remotecandidate.ToString();  
+            remoteIceCandidatesObj.ip = "127.0.0.2";
+            remoteIceCandidatesObj.port = 8888;
+            remoteIceCandidatesObj.candidateType = IceCandidateType.host.ToString();
+            remoteIceCandidatesObj.transport = IceCandidateTransport.tcp.ToString();
+            localIceCandidatesList.Add(remoteIceCandidatesObj);
+
+            List<IceCandidatePair> iceCandidatePairsList = new List<IceCandidatePair>();
+            IceCandidatePair iceCandidatePairObj = new IceCandidatePair();
+            iceCandidatePairObj.id = "3";
+            iceCandidatePairObj.localCandidateId = "1";
+            iceCandidatePairObj.remoteCandidateId = "2";
+            iceCandidatePairObj.state = IceCandidateState.failed.ToString();
+            iceCandidatePairObj.priority = 2;
+            iceCandidatePairObj.nominated = true;
+            iceCandidatePairsList.Add(iceCandidatePairObj);
+
+            IceAbortedData iceAbortedData = new IceAbortedData();
+            iceAbortedData.eventType = "iceFailed";
+            iceAbortedData.localID = _localID;
+            iceAbortedData.originID = _originID;
+            iceAbortedData.deviceID = _deviceID;
+            iceAbortedData.timestamp = TimeStamp.Now();
+            iceAbortedData.remoteID = "remoteID";
+            iceAbortedData.localIceCandidates = localIceCandidatesList;
+            iceAbortedData.remoteIceCandidates = remoteIceCandidatesList;
+            iceAbortedData.iceCandidatePairs = iceCandidatePairsList;
+            iceAbortedData.currIceConnectionState = "failed"; // Documentation: "closed";
+            iceAbortedData.prevIceConnectionState = IceAbortedConnectionState.checking.ToString();
+            iceAbortedData.delay = 2;
+
+            return iceAbortedData;
         }
     }
 }

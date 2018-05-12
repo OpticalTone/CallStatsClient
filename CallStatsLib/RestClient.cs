@@ -278,95 +278,12 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
-        public async Task IceAborted()
+        public async Task IceAborted(IceAbortedData iceAbortedData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";
+            iceAbortedData.connectionID = _ucID;
 
-            List<object> localIceCandidatesList = new List<object>();
-            object localIceCandidate = new
-            {
-                id = "1",
-                type = "localcandidate",
-                ip = "127.0.0.1",
-                port = 8888,
-                candidateType = "host",
-                transport = "tcp"
-            };
-            localIceCandidatesList.Add(localIceCandidate);
-
-            List<object> remoteIceCandidatesList = new List<object>();
-            object remoteIceCandidate = new
-            {
-                id = "2",
-                type = "remotecandidate",
-                ip = "127.0.0.2",
-                port = 8888,
-                candidateType = "host",
-                transport = "tcp"
-            };
-            remoteIceCandidatesList.Add(remoteIceCandidate);
-
-            List<object> iceCandidatePairsList = new List<object>();
-            object iceCandidatePair = new
-            {
-                id = "3",
-                localCandidateId = "1",
-                remoteCandidateId = "2",
-                state = "succeeded",
-                priority = 1,
-                nominated = true
-            };
-            iceCandidatePairsList.Add(iceCandidatePair);
-
-            object data = new
-            {
-                eventType = "iceDisruptionStart",
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                remoteID = "remoteID",
-                connectionID = _ucID,
-                localIceCandidates = localIceCandidatesList,
-                remoteIceCandidates = remoteIceCandidatesList,
-                iceCandidatePairs = iceCandidatePairsList,
-                currIceConnectionState = "closed",
-                prevIceConnectionState = "new",
-                delay = 0
-            };
-
-            await SendRequest(data, url);
-        }
-
-        public async Task IceTerminated()
-        {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";
-
-            object prevIceCandidatePairObj = new
-            {
-                id = "0",
-                localCandidateId = "0",
-                remoteCandidateId = "0",
-                state = "frozen",
-                priority = 1,
-                nominated = true
-            };
-
-            object data = new
-            {
-                eventType = "iceDisruptionStart",
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                remoteID = "remoteID",
-                connectionID = _ucID,
-                prevIceCandidatePair = prevIceCandidatePairObj,
-                currIceConnectionState = "closed",
-                prevIceConnectionState = "connected"
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(iceAbortedData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceConnectionDisruptionStart()
