@@ -376,5 +376,21 @@ namespace CallStatsClient
 
             return fabricActionData;
         }
+
+        public static SystemStatusStatsSubmissionData SystemStatusStatsSubmission()
+        {
+            SystemStatusStatsSubmissionData systemStatusStatsSubmissionData = new SystemStatusStatsSubmissionData();
+            systemStatusStatsSubmissionData.localID = _localID;
+            systemStatusStatsSubmissionData.originID = _originID;
+            systemStatusStatsSubmissionData.deviceID = _deviceID;
+            systemStatusStatsSubmissionData.timestamp = TimeStamp.Now();
+            systemStatusStatsSubmissionData.cpuUsage = 5;
+            systemStatusStatsSubmissionData.batteryLevel = 50;
+            systemStatusStatsSubmissionData.memoryUsage = 2;
+            systemStatusStatsSubmissionData.totalMemory = 100;
+            systemStatusStatsSubmissionData.threadCount = 1;
+
+            return systemStatusStatsSubmissionData;
+        }
     }
 }

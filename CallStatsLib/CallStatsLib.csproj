@@ -118,6 +118,7 @@
     <Compile Include="Request\IceCandidate.cs" />
     <Compile Include="Request\IceCandidatePair.cs" />
     <Compile Include="Request\SSRCMapData.cs" />
+    <Compile Include="Request\SystemStatusStatsSubmissionData.cs" />
     <Compile Include="Request\UserAliveData.cs" />
     <Compile Include="Request\UserDetailsData.cs" />
     <Compile Include="Request\UserLeftData.cs" />

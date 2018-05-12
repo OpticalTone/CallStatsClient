@@ -71,6 +71,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("FabricAction: ");
             await rClient.FabricAction(TestData.FabricAction());
+
+            Debug.WriteLine("SystemStatusStatsSubmission: ");
+            await rClient.SystemStatusStatsSubmission(TestData.SystemStatusStatsSubmission());
         }
     }
 }

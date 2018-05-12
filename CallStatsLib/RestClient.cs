@@ -236,24 +236,10 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/stats"));
         }
 
-        public async Task SystemStatusStatsSubmission()
+        public async Task SystemStatusStatsSubmission(SystemStatusStatsSubmissionData systemStatusStatsSubmissionData)
         {
-            string url = $"https://stats.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/stats/system";
-
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                cpuUsage = 5,
-                batteryLevel = 50,
-                memoryUsage = 2,
-                totalMemory = 100,
-                threadCount = 1
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(systemStatusStatsSubmissionData, UrlBuilder(Host.stats.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/stats/system"));
         }
 
         #endregion
