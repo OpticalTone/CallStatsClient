@@ -392,5 +392,29 @@ namespace CallStatsClient
 
             return systemStatusStatsSubmissionData;
         }
+
+        public static IceDisruptionStartData IceDisruptionStart()
+        {
+            IceCandidatePair currIceCandidatePairObj = new IceCandidatePair();
+            currIceCandidatePairObj.id = "4";
+            currIceCandidatePairObj.localCandidateId = "1";
+            currIceCandidatePairObj.remoteCandidateId = "2";
+            currIceCandidatePairObj.state = IceCandidateState.frozen.ToString();
+            currIceCandidatePairObj.priority = 2;
+            currIceCandidatePairObj.nominated = true;
+
+            IceDisruptionStartData iceDisruptionStartData = new IceDisruptionStartData();
+            iceDisruptionStartData.eventType = "iceDisruptionStart";
+            iceDisruptionStartData.localID = _localID;
+            iceDisruptionStartData.originID = _originID;
+            iceDisruptionStartData.deviceID = _deviceID;
+            iceDisruptionStartData.timestamp = TimeStamp.Now();
+            iceDisruptionStartData.remoteID = "remoteID";
+            iceDisruptionStartData.currIceCandidatePair = currIceCandidatePairObj;
+            iceDisruptionStartData.currIceConnectionState = "disconnected";
+            iceDisruptionStartData.prevIceConnectionState = ConnectionState.completed.ToString();
+
+            return iceDisruptionStartData;
+        }
     }
 }

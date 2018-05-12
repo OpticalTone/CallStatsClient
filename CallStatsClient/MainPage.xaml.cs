@@ -74,6 +74,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("SystemStatusStatsSubmission: ");
             await rClient.SystemStatusStatsSubmission(TestData.SystemStatusStatsSubmission());
+
+            Debug.WriteLine("IceDisruptionStart: ");
+            await rClient.IceDisruptionStart(TestData.IceDisruptionStart());
         }
     }
 }
