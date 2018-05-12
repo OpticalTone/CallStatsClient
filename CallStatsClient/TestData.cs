@@ -417,7 +417,7 @@ namespace CallStatsClient
             return iceDisruptionStartData;
         }
 
-        private enum IceConnectionState
+        private enum IceDisruptionEndConnectionState
         {
             connected, completed, checking
         }
@@ -449,11 +449,41 @@ namespace CallStatsClient
             iceDisruptionEndData.remoteID = "remoteID";
             iceDisruptionEndData.currIceCandidatePair = currIceCandidatePairObj;
             iceDisruptionEndData.prevIceCandidatePair = prevIceCandidatePairObj;
-            iceDisruptionEndData.currIceConnectionState = IceConnectionState.checking.ToString();
+            iceDisruptionEndData.currIceConnectionState = IceDisruptionEndConnectionState.checking.ToString();
             iceDisruptionEndData.prevIceConnectionState = "disconnected";
             iceDisruptionEndData.delay = 2;
 
             return iceDisruptionEndData;
+        }
+
+        private enum IceRestartConnectionState
+        {
+            checking, connected, completed,
+            failed, disconnected, closed
+        }
+
+        public static IceRestartData IceRestart()
+        {
+            IceCandidatePair prevIceCandidatePairObj = new IceCandidatePair();
+            prevIceCandidatePairObj.id = "0";
+            prevIceCandidatePairObj.localCandidateId = "0";
+            prevIceCandidatePairObj.remoteCandidateId = "0";
+            prevIceCandidatePairObj.state = IceCandidateState.frozen.ToString();
+            prevIceCandidatePairObj.priority = 1;
+            prevIceCandidatePairObj.nominated = true;
+
+            IceRestartData iceRestartData = new IceRestartData();
+            iceRestartData.eventType = "iceRestarted";
+            iceRestartData.localID = _localID;
+            iceRestartData.originID = _originID;
+            iceRestartData.deviceID = _deviceID;
+            iceRestartData.timestamp = TimeStamp.Now();
+            iceRestartData.remoteID = "remoteID";
+            iceRestartData.prevIceCandidatePair = prevIceCandidatePairObj;
+            iceRestartData.currIceConnectionState = "new";
+            iceRestartData.prevIceConnectionState = IceRestartConnectionState.checking.ToString();
+
+            return iceRestartData;
         }
     }
 }

@@ -262,37 +262,12 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
-        public async Task IceRestart()
+        public async Task IceRestart(IceRestartData iceRestartData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";
+            iceRestartData.connectionID = _ucID;
 
-            List<object> prevIceCandidatePairList = new List<object>();
-            object prevIceCandidatePairObj = new
-            {
-                id = "0",
-                localCandidateId = "0",
-                remoteCandidateId = "0",
-                state = "frozen",
-                priority = 1,
-                nominated = true
-            };
-            prevIceCandidatePairList.Add(prevIceCandidatePairObj);
-
-            object data = new
-            {
-                eventType = "iceDisruptionStart",
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                remoteID = "remoteID",
-                connectionID = _ucID,
-                prevIceCandidatePair = prevIceCandidatePairList,
-                currIceConnectionState = "new",
-                prevIceConnectionState = "completed"
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(iceRestartData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceFailed()

@@ -80,6 +80,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("IceDisruptionEnd: ");
             await rClient.IceDisruptionEnd(TestData.IceDisruptionEnd());
+
+            Debug.WriteLine("IceRestart: ");
+            await rClient.IceRestart(TestData.IceRestart());
         }
     }
 }
