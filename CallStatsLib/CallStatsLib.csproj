@@ -108,6 +108,7 @@
   <ItemGroup>
     <Compile Include="MediaActionData.cs" />
     <Compile Include="Request\ConferenceStatsSubmissionData.cs" />
+    <Compile Include="Request\ConnectedOrActiveDevicesData.cs" />
     <Compile Include="Request\CreateConferenceData.cs" />
     <Compile Include="Request\FabricActionData.cs" />
     <Compile Include="Request\FabricDroppedData.cs" />

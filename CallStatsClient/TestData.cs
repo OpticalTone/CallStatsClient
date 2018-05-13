@@ -705,5 +705,36 @@ namespace CallStatsClient
 
             return mediaPlaybackData;
         }
+
+        private enum MediaDeviceKind
+        {
+            audioinput, audiooutput, videoinput
+        }
+
+        private enum ConnectedOrActiveDevicesEventType
+        {
+            connectedDeviceList, activeDeviceList
+        }
+
+        public static ConnectedOrActiveDevicesData ConnectedOrActiveDevices()
+        {
+            List<MediaDevice> mediaDeviceList = new List<MediaDevice>();
+            MediaDevice mediaDeviceObj = new MediaDevice();
+            mediaDeviceObj.mediaDeviceID = "mediaDeviceID";
+            mediaDeviceObj.kind = MediaDeviceKind.videoinput.ToString();
+            mediaDeviceObj.label = "external USB Webcam";
+            mediaDeviceObj.groupID = "groupID";
+            mediaDeviceList.Add(mediaDeviceObj);
+
+            ConnectedOrActiveDevicesData connectedOrActiveDevicesData = new ConnectedOrActiveDevicesData();
+            connectedOrActiveDevicesData.localID = _localID;
+            connectedOrActiveDevicesData.originID = _originID;
+            connectedOrActiveDevicesData.deviceID = _deviceID;
+            connectedOrActiveDevicesData.timestamp = TimeStamp.Now();
+            connectedOrActiveDevicesData.mediaDeviceList = mediaDeviceList;
+            connectedOrActiveDevicesData.eventType = ConnectedOrActiveDevicesEventType.activeDeviceList.ToString();
+
+            return connectedOrActiveDevicesData;
+        }
     }
 }

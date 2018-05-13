@@ -334,31 +334,10 @@ namespace CallStatsLib
 
         #region Device Events
 
-        public async Task ConnectedOrActiveDevices()
+        public async Task ConnectedOrActiveDevices(ConnectedOrActiveDevicesData connectedOrActiveDevicesData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/devices/list";
-
-            List<object> mediaDeviceList = new List<object>();
-            object mediaDevice = new
-            {
-                mediaDeviceID = "mediaDeviceID",
-                kind = "videoinput",
-                label = "external USB Webcam",
-                groupID = "groupID"
-            };
-            mediaDeviceList.Add(mediaDevice);
-
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                mediaDeviceList = mediaDeviceList,
-                eventType = "connectedDeviceList"
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(connectedOrActiveDevicesData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/devices/list"));
         }
 
         #endregion

@@ -104,6 +104,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("MediaPlayback: ");
             await rClient.MediaPlayback(TestData.MediaPlayback());
+
+            Debug.WriteLine("ConnectedOrActiveDevices: ");
+            await rClient.ConnectedOrActiveDevices(TestData.ConnectedOrActiveDevices());
         }
     }
 }
