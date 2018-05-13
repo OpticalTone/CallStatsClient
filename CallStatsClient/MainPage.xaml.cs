@@ -89,6 +89,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("IceAborted: ");
             await rClient.IceAborted(TestData.IceAborted());
+
+            Debug.WriteLine("IceTerminated: ");
+            await rClient.IceTerminated(TestData.IceTerminated());
         }
     }
 }

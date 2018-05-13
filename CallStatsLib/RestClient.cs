@@ -286,6 +286,14 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
+        public async Task IceTerminated(IceTerminatedData iceTerminatedData)
+        {
+            iceTerminatedData.connectionID = _ucID;
+
+            await SendRequest(iceTerminatedData, UrlBuilder(Host.events.ToString(),
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
+        }
+
         public async Task IceConnectionDisruptionStart()
         {
             string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";

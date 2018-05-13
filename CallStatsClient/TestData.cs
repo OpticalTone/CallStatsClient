@@ -543,7 +543,7 @@ namespace CallStatsClient
         private enum IceAbortedConnectionState
         {
             checking, //"new"
-    }
+        }
 
         public static IceAbortedData IceAborted()
         {
@@ -592,6 +592,35 @@ namespace CallStatsClient
             iceAbortedData.delay = 2;
 
             return iceAbortedData;
+        }
+
+        private enum IceTerminatedConnectionState
+        {
+            connected, completed, failed, disconnected
+        }
+
+        public static IceTerminatedData IceTerminated()
+        {
+            IceCandidatePair iceCandidatePairObj = new IceCandidatePair();
+            iceCandidatePairObj.id = "3";
+            iceCandidatePairObj.localCandidateId = "1";
+            iceCandidatePairObj.remoteCandidateId = "2";
+            iceCandidatePairObj.state = IceCandidateState.failed.ToString();
+            iceCandidatePairObj.priority = 2;
+            iceCandidatePairObj.nominated = true;
+
+            IceTerminatedData iceTerminatedData = new IceTerminatedData();
+            iceTerminatedData.eventType = "iceTerminated";
+            iceTerminatedData.localID = _localID;
+            iceTerminatedData.originID = _originID;
+            iceTerminatedData.deviceID = _deviceID;
+            iceTerminatedData.timestamp = TimeStamp.Now();
+            iceTerminatedData.remoteID = "remoteID";
+            iceTerminatedData.prevIceCandidatePair = iceCandidatePairObj;
+            iceTerminatedData.currIceConnectionState = "closed";
+            iceTerminatedData.prevIceConnectionState = IceTerminatedConnectionState.failed.ToString();
+
+            return iceTerminatedData;
         }
     }
 }
