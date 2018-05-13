@@ -101,6 +101,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("MediaAction: ");
             await rClient.MediaAction(TestData.MediaAction());
+
+            Debug.WriteLine("MediaPlayback: ");
+            await rClient.MediaPlayback(TestData.MediaPlayback());
         }
     }
 }

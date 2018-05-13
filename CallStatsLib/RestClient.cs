@@ -322,22 +322,12 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/media/actions"));
         }
 
-        public async Task MediaPlayback()
+        public async Task MediaPlayback(MediaPlaybackData mediaPlaybackData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/media/pipeline";
+            mediaPlaybackData.connectionID = _ucID;
 
-            object data = new
-            {
-                eventType = "mediaPlaybackStart",
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                mediaType = "mediaType",
-                ssrc = "11"
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(mediaPlaybackData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/media/pipeline"));
         }
 
         #endregion

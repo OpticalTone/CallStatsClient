@@ -679,5 +679,31 @@ namespace CallStatsClient
 
             return mediaActionData;
         }
+
+        private enum MediaPlaybackEventType
+        {
+            mediaPlaybackStart, mediaPlaybackSuspended,
+            mediaPlaybackStalled, oneWayMedia
+        }
+
+        private enum MediaPlaybackMediaType
+        {
+            audio, video, screen
+        }
+
+        public static MediaPlaybackData MediaPlayback()
+        {
+            MediaPlaybackData mediaPlaybackData = new MediaPlaybackData();
+            mediaPlaybackData.eventType = MediaPlaybackEventType.mediaPlaybackStart.ToString();
+            mediaPlaybackData.localID = _localID;
+            mediaPlaybackData.originID = _originID;
+            mediaPlaybackData.deviceID = _deviceID;
+            mediaPlaybackData.timestamp = TimeStamp.Now();
+            mediaPlaybackData.remoteID = "remoteID";    // Documentation: This field is not in docs, also connectionID
+            mediaPlaybackData.mediaType = MediaPlaybackMediaType.audio.ToString();
+            mediaPlaybackData.ssrc = "11";
+
+            return mediaPlaybackData;
+        }
     }
 }
