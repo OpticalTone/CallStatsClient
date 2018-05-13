@@ -95,6 +95,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("IceConnectionDisruptionStart: ");
             await rClient.IceConnectionDisruptionStart(TestData.IceConnectionDisruptionStart());
+
+            Debug.WriteLine("IceConnectionDisruptionEnd: ");
+            await rClient.IceConnectionDisruptionEnd(TestData.IceConnectionDisruptionEnd());
         }
     }
 }

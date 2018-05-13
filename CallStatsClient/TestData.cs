@@ -637,5 +637,21 @@ namespace CallStatsClient
 
             return iceConnectionDisruptionStartData;
         }
+
+        public static IceConnectionDisruptionEndData IceConnectionDisruptionEnd()
+        {
+            IceConnectionDisruptionEndData iceConnectionDisruptionEndData = new IceConnectionDisruptionEndData();
+            iceConnectionDisruptionEndData.eventType = "iceConnectionDisruptionEnd";
+            iceConnectionDisruptionEndData.localID = _localID;
+            iceConnectionDisruptionEndData.originID = _originID;
+            iceConnectionDisruptionEndData.deviceID = _deviceID;
+            iceConnectionDisruptionEndData.timestamp = TimeStamp.Now();
+            iceConnectionDisruptionEndData.remoteID = "remoteID";
+            iceConnectionDisruptionEndData.currIceConnectionState = "checking";
+            iceConnectionDisruptionEndData.prevIceConnectionState = "disconnected";
+            iceConnectionDisruptionEndData.delay = 2;
+
+            return iceConnectionDisruptionEndData;
+        }
     }
 }
