@@ -107,6 +107,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="MediaActionData.cs" />
+    <Compile Include="Request\ApplicationErrorLogsData.cs" />
     <Compile Include="Request\ConferenceStatsSubmissionData.cs" />
     <Compile Include="Request\ConnectedOrActiveDevicesData.cs" />
     <Compile Include="Request\CreateConferenceData.cs" />

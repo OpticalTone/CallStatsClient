@@ -736,5 +736,29 @@ namespace CallStatsClient
 
             return connectedOrActiveDevicesData;
         }
+
+        private enum ErrorLogsLevel
+        {
+            debug, info, warn, error, fatal
+        }
+
+        private enum ErrorLogsMessageType
+        {
+            text, json, domError
+        }
+
+        public static ApplicationErrorLogsData ApplicationErrorLogs()
+        {
+            ApplicationErrorLogsData applicationErrorLogsData = new ApplicationErrorLogsData();
+            applicationErrorLogsData.localID = _localID;
+            applicationErrorLogsData.originID = _originID;
+            applicationErrorLogsData.deviceID = _deviceID;
+            applicationErrorLogsData.timestamp = TimeStamp.Now();
+            applicationErrorLogsData.level = ErrorLogsLevel.debug.ToString();
+            applicationErrorLogsData.message = "Application error message";
+            applicationErrorLogsData.messageType = ErrorLogsMessageType.json.ToString();
+
+            return applicationErrorLogsData;
+        }
     }
 }

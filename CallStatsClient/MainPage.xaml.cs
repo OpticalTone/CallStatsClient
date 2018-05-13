@@ -107,6 +107,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("ConnectedOrActiveDevices: ");
             await rClient.ConnectedOrActiveDevices(TestData.ConnectedOrActiveDevices());
+
+            Debug.WriteLine("ApplicationErrorLogs: ");
+            await rClient.ApplicationErrorLogs(TestData.ApplicationErrorLogs());
         }
     }
 }

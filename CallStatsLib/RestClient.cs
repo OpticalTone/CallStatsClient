@@ -344,23 +344,12 @@ namespace CallStatsLib
 
         #region Special Events
 
-        public async Task ApplicationErrorLogs()
+        public async Task ApplicationErrorLogs(ApplicationErrorLogsData applicationErrorLogsData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/app/logs";
+            applicationErrorLogsData.connectionID = _ucID;
 
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                connectionID = _ucID,
-                level = "debug",
-                message = "Application error message",
-                messageType = "json"
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(applicationErrorLogsData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/app/logs"));
         }
 
         public async Task ConferenceUserFeedback()
