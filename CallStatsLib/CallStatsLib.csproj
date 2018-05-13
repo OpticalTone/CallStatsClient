@@ -118,6 +118,7 @@
     <Compile Include="Request\IceAbortedData.cs" />
     <Compile Include="Request\IceCandidate.cs" />
     <Compile Include="Request\IceCandidatePair.cs" />
+    <Compile Include="Request\IceConnectionDisruptionStartData.cs" />
     <Compile Include="Request\IceDisruptionEndData.cs" />
     <Compile Include="Request\IceDisruptionStartData.cs" />
     <Compile Include="Request\IceFailedData.cs" />

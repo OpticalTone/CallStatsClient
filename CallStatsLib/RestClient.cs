@@ -294,24 +294,12 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
-        public async Task IceConnectionDisruptionStart()
+        public async Task IceConnectionDisruptionStart(IceConnectionDisruptionStartData iceConnectionDisruptionStartData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status";
+            iceConnectionDisruptionStartData.connectionID = _ucID;
 
-            object data = new
-            {
-                eventType = "iceDisruptionStart",
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                remoteID = "remoteID",
-                connectionID = _ucID,
-                currIceConnectionState = "disconnected",
-                prevIceConnectionState = "checking"
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(iceConnectionDisruptionStartData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceConnectionDisruptionEnd()
