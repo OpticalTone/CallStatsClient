@@ -98,6 +98,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("IceConnectionDisruptionEnd: ");
             await rClient.IceConnectionDisruptionEnd(TestData.IceConnectionDisruptionEnd());
+
+            Debug.WriteLine("MediaAction: ");
+            await rClient.MediaAction(TestData.MediaAction());
         }
     }
 }

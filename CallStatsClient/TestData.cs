@@ -653,5 +653,31 @@ namespace CallStatsClient
 
             return iceConnectionDisruptionEndData;
         }
+
+        private enum MediaActionEventType
+        {
+            audioMute, audioUnmute, screenShareStart,
+            screenShareStop, videoPause, videoResume
+        }
+
+        public static MediaActionData MediaAction()
+        {
+            List<string> remoteIDList = new List<string>();
+            remoteIDList.Add("remoteID1");
+            remoteIDList.Add("remoteID2");
+
+            MediaActionData mediaActionData = new MediaActionData();
+            mediaActionData.eventType = MediaActionEventType.audioMute.ToString();
+            mediaActionData.localID = _localID;
+            mediaActionData.originID = _originID;
+            mediaActionData.deviceID = _deviceID;
+            mediaActionData.timestamp = TimeStamp.Now();
+            mediaActionData.remoteID = "remoteID";
+            mediaActionData.ssrc = "11";
+            mediaActionData.mediaDeviceID = "mediaDeviceID";
+            mediaActionData.remoteIDList = remoteIDList;
+
+            return mediaActionData;
+        }
     }
 }

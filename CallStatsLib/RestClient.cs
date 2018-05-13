@@ -314,29 +314,12 @@ namespace CallStatsLib
 
         #region Media Events
 
-        public async Task MediaAction()
+        public async Task MediaAction(MediaActionData mediaActionData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/media/actions";
+            mediaActionData.connectionID = _ucID;
 
-            List<string> remoteIDList = new List<string>();
-            remoteIDList.Add("remoteID1");
-            remoteIDList.Add("remoteID2");
-
-            object data = new
-            {
-                eventType = "screenShareStart",
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                remoteID = "remoteID",
-                connectionID = _ucID,
-                ssrc = "11",
-                mediaDeviceID = "mediaDeviceID",
-                remoteIDList = remoteIDList
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(mediaActionData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/media/actions"));
         }
 
         public async Task MediaPlayback()
