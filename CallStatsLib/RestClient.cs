@@ -384,36 +384,10 @@ namespace CallStatsLib
 
         #region Bridge Events
 
-        private async Task BridgeStatistics()
+        public async Task BridgeStatistics(BridgeStatisticsData bridgeStatisticsData)
         {
-            string url = $"https://stats.callstats.io/v1/apps/{_appID}/stats/bridge/status";
-
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                cpuUsage = 5,
-                batteryLevel = 50,
-                memoryUsage = 2,
-                totalMemory = 100,
-                threadCount = 1,
-                intervalSentBytes = 0,
-                intervalReceivedBytes = 0,
-                intervalRtpFractionLoss = 0,
-                totalRtpLostPackets = 0,
-                intervalAverageRtt = 0,
-                intervalAverageJitter = 0,
-                intervalDownloadBitrate = 0,
-                intervalUploadBitrate = 0,
-                audioFabricCount = 0,
-                videoFabricCount = 0,
-                conferenceCount = 0,
-                participantCount = 0
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(bridgeStatisticsData, UrlBuilder(Host.stats.ToString(), 
+                $"/v1/apps/{_appID}/stats/bridge/status"));
         }
 
         public async Task BridgeAlive()

@@ -119,6 +119,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("SDPEvent: ");
             await rClient.SDPEvent(TestData.SDPEvent());
+
+            Debug.WriteLine("BridgeStatistics: ");
+            await rClient.BridgeStatistics(TestData.BridgeStatistics());
         }
     }
 }

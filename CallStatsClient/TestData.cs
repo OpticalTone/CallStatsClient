@@ -804,5 +804,33 @@ namespace CallStatsClient
 
             return sdpEventData;
         }
+
+        public static BridgeStatisticsData BridgeStatistics() 
+        {
+            BridgeStatisticsData bridgeStatisticsData = new BridgeStatisticsData();
+            bridgeStatisticsData.localID = _localID;
+            bridgeStatisticsData.originID = _originID;
+            bridgeStatisticsData.deviceID = _deviceID;
+            bridgeStatisticsData.timestamp = TimeStamp.Now();
+            bridgeStatisticsData.cpuUsage = 0;
+            bridgeStatisticsData.batteryLevel = 0;
+            bridgeStatisticsData.memoryUsage = 0;
+            bridgeStatisticsData.totalMemory = 0;
+            bridgeStatisticsData.totalMemory = 1;
+            bridgeStatisticsData.intervalSentBytes = 0;
+            bridgeStatisticsData.intervalReceivedBytes = 0;
+            bridgeStatisticsData.intervalRtpFractionLoss = 0;
+            bridgeStatisticsData.totalRtpLostPackets = 0;
+            bridgeStatisticsData.intervalAverageRtt = 0;
+            bridgeStatisticsData.intervalAverageJitter = 0;
+            bridgeStatisticsData.intervalDownloadBitrate = 0;
+            bridgeStatisticsData.intervalUploadBitrate = 0;
+            bridgeStatisticsData.audioFabricCount = 0;
+            bridgeStatisticsData.videoFabricCount = 0;
+            bridgeStatisticsData.conferenceCount = 0;
+            bridgeStatisticsData.participantCount = 0;
+
+            return bridgeStatisticsData;
+        }
     }
 }
