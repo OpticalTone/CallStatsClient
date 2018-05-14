@@ -20,12 +20,7 @@ namespace CallStatsLib
     {
         private static readonly HttpClient _client = new HttpClient();
         private static string _domain = "callstats.io";
-        private enum Host
-        {
-            auth,
-            events,
-            stats
-        }
+        private enum Host { auth, events, stats }
 
         private string _localID;
         private string _appID;
@@ -415,10 +410,16 @@ namespace CallStatsLib
             HttpResponseMessage res = await _client.SendAsync(req);
 
             HttpStatusCode statusCode = res.StatusCode;
+
+            if (statusCode != HttpStatusCode.OK)
+            {
+                Debug.WriteLine($"[Error] Http response status code: {statusCode}");
+            }
+
             string content = await res.Content.ReadAsStringAsync();
 
-            Debug.WriteLine($"SendRequest statusCode: {statusCode}");
-            Debug.WriteLine($"SendRequest content: {content}");
+            Debug.WriteLine(content);
+            Debug.WriteLine(string.Empty);
 
             return Tuple.Create(statusCode, content);
         }

@@ -10,10 +10,7 @@ namespace CallStatsClient
         private static string _originID = Config.localSettings.Values["originID"].ToString();
         private static string _deviceID = Config.localSettings.Values["deviceID"].ToString();
 
-        private enum EndpointInfoType
-        {
-            browser, native, plugin, middlebox
-        }
+        private enum EndpointInfoType { browser, native, plugin, middlebox }
 
         public static CreateConferenceData CreateConference()
         {
@@ -47,50 +44,25 @@ namespace CallStatsClient
             return userAliveData;
         }
 
-        private enum FabricTransmissionDirection
-        {
-            sendrecv, sendonly, receiveonly
-        }
+        private enum FabricTransmissionDirection { sendrecv, sendonly, receiveonly }
 
-        private enum RemoteEndpointType
-        {
-            peer, server
-        }
+        private enum RemoteEndpointType { peer, server }
 
         private enum IceCandidateType
         {
-            host, srflx, prflx, relay, stun, serverreflexive,
-            peerreflexive, turn, relayed, local
+            host, srflx, prflx, relay, stun, serverreflexive, peerreflexive, turn, relayed, local
         }
 
-        private enum IceCandidateTransport
-        {
-            tcp, udp
-        }
+        private enum IceCandidateTransport { tcp, udp }
 
-        private enum IceCandidateState
-        {
-            frozen, waiting, inprogress, failed, succeeded, cancelled
-        }
-
-        private enum LocalIceCandidateType
-        {
-            localcandidate,
-            // "local-candidate"
-        }
-
-        private enum RemoteIceCandidateType
-        {
-            remotecandidate,
-            // "remote-candidate"
-        }
+        private enum IceCandidateState { frozen, waiting, inprogress, failed, succeeded, cancelled }
 
         public static FabricSetupData FabricSetup()
         {
             List<IceCandidate> localIceCandidatesList = new List<IceCandidate>();
             IceCandidate localIceCandidateObj = new IceCandidate();
             localIceCandidateObj.id = "1";
-            localIceCandidateObj.type = LocalIceCandidateType.localcandidate.ToString();
+            localIceCandidateObj.type = LocalIceCandidateType.localCandidate.ToString();
             localIceCandidateObj.ip = "127.0.0.1";
             localIceCandidateObj.port = 8888;
             localIceCandidateObj.candidateType = IceCandidateType.host.ToString();
@@ -100,7 +72,7 @@ namespace CallStatsClient
             List<IceCandidate> remoteIceCandidatesList = new List<IceCandidate>();
             IceCandidate remoteIceCandidateObj = new IceCandidate();
             remoteIceCandidateObj.id = "2";
-            remoteIceCandidateObj.type = RemoteIceCandidateType.remotecandidate.ToString();
+            remoteIceCandidateObj.type = RemoteIceCandidateType.remoteCandidate.ToString();
             remoteIceCandidateObj.ip = "127.0.0.2";
             remoteIceCandidateObj.port = 8888;
             remoteIceCandidateObj.candidateType = IceCandidateType.host.ToString();
@@ -137,9 +109,8 @@ namespace CallStatsClient
 
         private enum FabricSetupFailedReason
         {
-            MediaConfigError, MediaPermissionError, MediaDeviceError,
-            NegotiationFailure, SDPGenerationError, TransportFailure,
-            SignalingError, IceConnectionFailure
+            MediaConfigError, MediaPermissionError, MediaDeviceError, NegotiationFailure,
+            SDPGenerationError, TransportFailure, SignalingError, IceConnectionFailure
         }
 
         public static FabricSetupFailedData FabricSetupFailed()
@@ -159,20 +130,11 @@ namespace CallStatsClient
             return fabricSetupFailedData;
         }
 
-        private enum StreamType
-        {
-            inbound, outbound
-        }
+        private enum StreamType { inbound, outbound }
 
-        private enum ReportType
-        {
-            local, remote
-        }
+        private enum ReportType { local, remote }
 
-        private enum MediaType
-        {
-            audio, video, screen
-        }
+        private enum MediaType { audio, video, screen }
 
         public static SSRCMapData SSRCMap()
         {
@@ -256,30 +218,7 @@ namespace CallStatsClient
             return userDetailsData;
         }
 
-        private enum StateChange
-        {
-            stable,
-            //"have-local-offer",
-            //"have-remote-offer",
-            //"have-local-pranswer",
-            //"have-remote-pranswer",
-            closed,
-            //"new",
-            connecting,
-            connected,
-            disconnected,
-            failed,
-            checking,
-            completed,
-            gathering,
-            complete
-        }
-
-        private enum ChangedState
-        {
-            signalingState, connectionState,
-            iceConnectionState, iceGatheringState
-        }
+        private enum ChangedState { signalingState, connectionState, iceConnectionState, iceGatheringState }
 
         public static FabricStateChangeData FabricStateChange()
         {
@@ -290,16 +229,13 @@ namespace CallStatsClient
             fabricStateChangeData.timestamp = TimeStamp.Now();
             fabricStateChangeData.remoteID = "remoteID";
             fabricStateChangeData.prevState = StateChange.stable.ToString();
-            fabricStateChangeData.newState = StateChange.closed.ToString();
+            fabricStateChangeData.newState = StateChange.haveLocalOffer.ToString();
             fabricStateChangeData.changedState = ChangedState.signalingState.ToString();
 
             return fabricStateChangeData;
         }
 
-        private enum ConnectionState
-        {
-            connected, completed
-        }
+        private enum ConnectionState { connected, completed }
 
         public static FabricTransportChangeData FabricTransportChange()
         {
@@ -330,7 +266,7 @@ namespace CallStatsClient
             fabricTransportChangeData.currIceConnectionState = ConnectionState.completed.ToString();
             fabricTransportChangeData.prevIceConnectionState = ConnectionState.connected.ToString();
             fabricTransportChangeData.delay = 0;
-            fabricTransportChangeData.relayType = "turn/tcp"; // "turn/udp" "turn/tcp" "turn/tls"
+            fabricTransportChangeData.relayType = RelayType.turnTls;
 
             return fabricTransportChangeData;
         }
@@ -359,10 +295,7 @@ namespace CallStatsClient
             return fabricDroppedData;
         }
 
-        private enum EventType
-        {
-            fabricHold, fabricResume
-        }
+        private enum EventType { fabricHold, fabricResume }
 
         public static FabricActionData FabricAction()
         {
@@ -377,7 +310,7 @@ namespace CallStatsClient
             return fabricActionData;
         }
 
-        public static SystemStatusStatsSubmissionData SystemStatusStatsSubmission() // statusCode: MethodNotAllowed
+        public static SystemStatusStatsSubmissionData SystemStatusStatsSubmission() // Documentation: statusCode: MethodNotAllowed
         {
             SystemStatusStatsSubmissionData systemStatusStatsSubmissionData = new SystemStatusStatsSubmissionData();
             systemStatusStatsSubmissionData.localID = _localID;
@@ -417,10 +350,7 @@ namespace CallStatsClient
             return iceDisruptionStartData;
         }
 
-        private enum IceDisruptionEndConnectionState
-        {
-            connected, completed, checking
-        }
+        private enum IceDisruptionEndConnectionState { connected, completed, checking }
 
         public static IceDisruptionEndData IceDisruptionEnd()
         {
@@ -456,11 +386,7 @@ namespace CallStatsClient
             return iceDisruptionEndData;
         }
 
-        private enum IceRestartConnectionState
-        {
-            checking, connected, completed,
-            failed, disconnected, closed
-        }
+        private enum IceRestartConnectionState { checking, connected, completed, failed, disconnected, closed }
 
         public static IceRestartData IceRestart()
         {
@@ -486,10 +412,7 @@ namespace CallStatsClient
             return iceRestartData;
         }
 
-        private enum IceFailedConnectionState
-        {
-            checking, disconnected
-        }
+        private enum IceFailedConnectionState { checking, disconnected }
 
         public static IceFailedData IceFailed()
         {
@@ -540,10 +463,7 @@ namespace CallStatsClient
             return iceFailedData;
         }
 
-        private enum IceAbortedConnectionState
-        {
-            checking, //"new"
-        }
+        private enum IceAbortedConnectionState { checking, disconnected }  // Documentation: wrong option "new"
 
         public static IceAbortedData IceAborted()
         {
@@ -588,16 +508,13 @@ namespace CallStatsClient
             iceAbortedData.remoteIceCandidates = remoteIceCandidatesList;
             iceAbortedData.iceCandidatePairs = iceCandidatePairsList;
             iceAbortedData.currIceConnectionState = "failed"; // Documentation: "closed";
-            iceAbortedData.prevIceConnectionState = IceAbortedConnectionState.checking.ToString();
+            iceAbortedData.prevIceConnectionState = IceAbortedConnectionState.disconnected.ToString();
             iceAbortedData.delay = 2;
 
             return iceAbortedData;
         }
 
-        private enum IceTerminatedConnectionState
-        {
-            connected, completed, failed, disconnected
-        }
+        private enum IceTerminatedConnectionState { connected, completed, failed, disconnected }
 
         public static IceTerminatedData IceTerminated()
         {
@@ -656,8 +573,7 @@ namespace CallStatsClient
 
         private enum MediaActionEventType
         {
-            audioMute, audioUnmute, screenShareStart,
-            screenShareStop, videoPause, videoResume
+            audioMute, audioUnmute, screenShareStart, screenShareStop, videoPause, videoResume
         }
 
         public static MediaActionData MediaAction()
@@ -682,14 +598,10 @@ namespace CallStatsClient
 
         private enum MediaPlaybackEventType
         {
-            mediaPlaybackStart, mediaPlaybackSuspended,
-            mediaPlaybackStalled, oneWayMedia
+            mediaPlaybackStart, mediaPlaybackSuspended, mediaPlaybackStalled, oneWayMedia
         }
 
-        private enum MediaPlaybackMediaType
-        {
-            audio, video, screen
-        }
+        private enum MediaPlaybackMediaType { audio, video, screen }
 
         public static MediaPlaybackData MediaPlayback()
         {
@@ -706,15 +618,9 @@ namespace CallStatsClient
             return mediaPlaybackData;
         }
 
-        private enum MediaDeviceKind
-        {
-            audioinput, audiooutput, videoinput
-        }
+        private enum MediaDeviceKind { audioinput, audiooutput, videoinput }
 
-        private enum ConnectedOrActiveDevicesEventType
-        {
-            connectedDeviceList, activeDeviceList
-        }
+        private enum ConnectedOrActiveDevicesEventType{ connectedDeviceList, activeDeviceList }
 
         public static ConnectedOrActiveDevicesData ConnectedOrActiveDevices()
         {
@@ -737,15 +643,9 @@ namespace CallStatsClient
             return connectedOrActiveDevicesData;
         }
 
-        private enum ErrorLogsLevel
-        {
-            debug, info, warn, error, fatal
-        }
+        private enum ErrorLogsLevel { debug, info, warn, error, fatal }
 
-        private enum ErrorLogsMessageType
-        {
-            text, json, domError
-        }
+        private enum ErrorLogsMessageType { text, json, domError }
 
         public static ApplicationErrorLogsData ApplicationErrorLogs()
         {
@@ -843,5 +743,37 @@ namespace CallStatsClient
 
             return bridgeAliveData;
         }
+    }
+
+    public static class LocalIceCandidateType
+    {
+        public static string localcandidate = "localcandidate";
+        public static string localCandidate = "local-candidate";
+    }
+
+    public static class RemoteIceCandidateType
+    {
+        public static string remotecandidate = "remotecandidate";
+        public static string remoteCandidate = "remote-candidate";
+    }
+
+    public static class RelayType
+    {
+        public static string turnTcp = "turn/tcp";
+        public static string turnUdp = "turn/udp";
+        public static string turnTls = "turn/tls";
+    }
+
+    public static class StateChange
+    {
+        public static string stable = "stable";
+        public static string haveLocalOffer = "have-local-offer";
+        public static string haveRemoteOffer = "have-remote-offer";
+        public static string haveLocalPranswer = "have-local-pranswer";
+        public static string haveRemotePranswer = "have-remote-pranswer";
+        public static string closed = "closed";
+
+        // Documentation: Invalid signalingState 442
+        // "new", "connecting", "connected", "failed", "checking", "completed", "gathering", "complete" 
     }
 }
