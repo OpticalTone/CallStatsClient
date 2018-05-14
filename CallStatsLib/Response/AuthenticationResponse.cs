@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CallStatsLib.Responses
+namespace CallStatsLib.Response
 {
     class AuthenticationResponse
     {

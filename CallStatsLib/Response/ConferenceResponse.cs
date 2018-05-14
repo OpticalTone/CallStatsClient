@@ -1,4 +1,4 @@
-﻿namespace CallStatsLib.Responses
+﻿namespace CallStatsLib.Response
 {
     class ConferenceResponse
     {

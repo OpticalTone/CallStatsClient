@@ -106,7 +106,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="MediaActionData.cs" />
+    <Compile Include="Request\MediaActionData.cs" />
     <Compile Include="Request\ApplicationErrorLogsData.cs" />
     <Compile Include="Request\BridgeAliveData.cs" />
     <Compile Include="Request\BridgeStatisticsData.cs" />
@@ -139,8 +139,8 @@
     <Compile Include="Request\UserAliveData.cs" />
     <Compile Include="Request\UserDetailsData.cs" />
     <Compile Include="Request\UserLeftData.cs" />
-    <Compile Include="Responses\AuthenticationResponse.cs" />
-    <Compile Include="Responses\ConferenceResponse.cs" />
+    <Compile Include="Response\AuthenticationResponse.cs" />
+    <Compile Include="Response\ConferenceResponse.cs" />
     <Compile Include="RestClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimeStamp.cs" />

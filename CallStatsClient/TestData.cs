@@ -747,31 +747,31 @@ namespace CallStatsClient
 
     public static class LocalIceCandidateType
     {
-        public static string localcandidate = "localcandidate";
-        public static string localCandidate = "local-candidate";
+        public const string localcandidate = "localcandidate";
+        public const string localCandidate = "local-candidate";
     }
 
     public static class RemoteIceCandidateType
     {
-        public static string remotecandidate = "remotecandidate";
-        public static string remoteCandidate = "remote-candidate";
+        public const string remotecandidate = "remotecandidate";
+        public const string remoteCandidate = "remote-candidate";
     }
 
     public static class RelayType
     {
-        public static string turnTcp = "turn/tcp";
-        public static string turnUdp = "turn/udp";
-        public static string turnTls = "turn/tls";
+        public const string turnTcp = "turn/tcp";
+        public const string turnUdp = "turn/udp";
+        public const string turnTls = "turn/tls";
     }
 
     public static class StateChange
     {
-        public static string stable = "stable";
-        public static string haveLocalOffer = "have-local-offer";
-        public static string haveRemoteOffer = "have-remote-offer";
-        public static string haveLocalPranswer = "have-local-pranswer";
-        public static string haveRemotePranswer = "have-remote-pranswer";
-        public static string closed = "closed";
+        public const string stable = "stable";
+        public const string haveLocalOffer = "have-local-offer";
+        public const string haveRemoteOffer = "have-remote-offer";
+        public const string haveLocalPranswer = "have-local-pranswer";
+        public const string haveRemotePranswer = "have-remote-pranswer";
+        public const string closed = "closed";
 
         // Documentation: Invalid signalingState 442
         // "new", "connecting", "connected", "failed", "checking", "completed", "gathering", "complete" 

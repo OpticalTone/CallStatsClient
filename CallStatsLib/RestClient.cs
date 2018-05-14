@@ -1,4 +1,4 @@
-﻿using CallStatsLib.Responses;
+﻿using CallStatsLib.Response;
 using System;
 using System.Collections.Generic;
 using System.Timers;
