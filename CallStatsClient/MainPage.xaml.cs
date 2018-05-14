@@ -3,6 +3,7 @@ using CallStatsLib.Request;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Timers;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -122,6 +123,17 @@ namespace CallStatsClient
 
             Debug.WriteLine("BridgeStatistics: ");
             await rClient.BridgeStatistics(TestData.BridgeStatistics());
+
+            Debug.WriteLine("BridgeAlive: ");
+            await rClient.BridgeAlive(TestData.BridgeAlive());
+
+            Timer timer = new Timer(30000);
+            timer.Elapsed += async (sender, e) =>
+            {
+                Debug.WriteLine("BridgeAlive: ");
+                await rClient.BridgeAlive(TestData.BridgeAlive());
+            };
+            timer.Start();
         }
     }
 }

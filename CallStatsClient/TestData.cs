@@ -832,5 +832,16 @@ namespace CallStatsClient
 
             return bridgeStatisticsData;
         }
+
+        public static BridgeAliveData BridgeAlive()
+        {
+            BridgeAliveData bridgeAliveData = new BridgeAliveData();
+            bridgeAliveData.localID = _localID;
+            bridgeAliveData.originID = _originID;
+            bridgeAliveData.deviceID = _deviceID;
+            bridgeAliveData.timestamp = TimeStamp.Now();
+
+            return bridgeAliveData;
+        }
     }
 }

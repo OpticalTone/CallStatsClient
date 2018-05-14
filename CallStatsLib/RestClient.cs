@@ -390,19 +390,10 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/stats/bridge/status"));
         }
 
-        public async Task BridgeAlive()
+        public async Task BridgeAlive(BridgeAliveData bridgeAliveData)
         {
-            string url = $"https://stats.callstats.io/v1/apps/{_appID}/stats/bridge/alive";
-
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now()
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(bridgeAliveData, UrlBuilder(Host.stats.ToString(), 
+                $"/v1/apps/{_appID}/stats/bridge/alive"));
         }
 
         #endregion
