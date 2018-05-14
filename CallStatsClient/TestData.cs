@@ -790,5 +790,19 @@ namespace CallStatsClient
 
             return dominantSpeakerData;
         }
+
+        public static SDPEventData SDPEvent()
+        {
+            SDPEventData sdpEventData = new SDPEventData();
+            sdpEventData.localID = _localID;
+            sdpEventData.originID = _originID;
+            sdpEventData.deviceID = _deviceID;
+            sdpEventData.timestamp = TimeStamp.Now();
+            sdpEventData.remoteID = "remoteID";
+            sdpEventData.localSDP = "Stringified SDP of the local user";
+            sdpEventData.remoteID = "Stringified SDP of the remote user";
+
+            return sdpEventData;
+        }
     }
 }

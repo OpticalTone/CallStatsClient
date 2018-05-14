@@ -116,6 +116,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("DominantSpeaker: ");
             await rClient.DominantSpeaker(TestData.DominantSpeaker());
+
+            Debug.WriteLine("SDPEvent: ");
+            await rClient.SDPEvent(TestData.SDPEvent());
         }
     }
 }

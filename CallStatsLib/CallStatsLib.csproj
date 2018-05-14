@@ -131,6 +131,7 @@
     <Compile Include="Request\IceRestartData.cs" />
     <Compile Include="Request\IceTerminatedData.cs" />
     <Compile Include="Request\MediaPlaybackData.cs" />
+    <Compile Include="Request\SDPEventData.cs" />
     <Compile Include="Request\SSRCMapData.cs" />
     <Compile Include="Request\SystemStatusStatsSubmissionData.cs" />
     <Compile Include="Request\UserAliveData.cs" />

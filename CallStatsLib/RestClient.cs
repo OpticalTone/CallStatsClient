@@ -372,23 +372,12 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ssrcmap"));
         }
 
-        public async Task SDPEvent()
+        public async Task SDPEvent(SDPEventData sdpEventData)
         {
-            string url = $"https://HOSTNAME/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/sdp";
+            sdpEventData.connectionID = _ucID;
 
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                connectionID = _ucID,
-                remoteID = "remoteID",
-                localSDP = "",
-                remoteSDP = ""
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(sdpEventData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/sdp"));
         }
 
         #endregion
