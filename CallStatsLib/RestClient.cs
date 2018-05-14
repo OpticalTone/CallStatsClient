@@ -352,44 +352,10 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/app/logs"));
         }
 
-        public async Task ConferenceUserFeedback()
+        public async Task ConferenceUserFeedback(ConferenceUserFeedbackData conferenceUserFeedbackData)
         {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/feedback";
-
-            object feedbackObj = new
-            {
-                overallRating = 5,
-                videoQualityRating = 5,
-                audioQualityRating = 5,
-                comments = "comments"
-            };
-
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now(),
-                remoteID = "remoteID",
-                feedback = feedbackObj
-            };
-
-            await SendRequest(data, url);
-        }
-
-        private async Task DominantSpeaker()
-        {
-            string url = $"https://events.callstats.io/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/dominantspeaker";
-
-            object data = new
-            {
-                localID = _localID,
-                originID = "originID",
-                deviceID = "deviceID",
-                timestamp = TimeStamp.Now()
-            };
-
-            await SendRequest(data, url);
+            await SendRequest(conferenceUserFeedbackData, UrlBuilder(Host.events.ToString(), 
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/feedback"));
         }
 
         private async Task SSRCMap(SSRCMapData ssrcMapData)

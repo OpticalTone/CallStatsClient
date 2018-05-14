@@ -760,5 +760,24 @@ namespace CallStatsClient
 
             return applicationErrorLogsData;
         }
+
+        public static ConferenceUserFeedbackData ConferenceUserFeedback()
+        {
+            Feedback feedbackObj = new Feedback();
+            feedbackObj.overallRating = 4;
+            feedbackObj.videoQualityRating = 3;
+            feedbackObj.audioQualityRating = 5;
+            feedbackObj.comments = "Comments from the participant";
+
+            ConferenceUserFeedbackData conferenceUserFeedbackData = new ConferenceUserFeedbackData();
+            conferenceUserFeedbackData.localID = _localID;
+            conferenceUserFeedbackData.originID = _originID;
+            conferenceUserFeedbackData.deviceID = _deviceID;
+            conferenceUserFeedbackData.timestamp = TimeStamp.Now();
+            conferenceUserFeedbackData.remoteID = "remoteID";
+            conferenceUserFeedbackData.feedback = feedbackObj;
+
+            return conferenceUserFeedbackData;
+        }
     }
 }

@@ -110,6 +110,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("ApplicationErrorLogs: ");
             await rClient.ApplicationErrorLogs(TestData.ApplicationErrorLogs());
+
+            Debug.WriteLine("ConferenceUserFeedback: ");
+            await rClient.ConferenceUserFeedback(TestData.ConferenceUserFeedback());
         }
     }
 }
