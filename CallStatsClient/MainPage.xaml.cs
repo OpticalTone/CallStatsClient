@@ -113,6 +113,9 @@ namespace CallStatsClient
 
             Debug.WriteLine("ConferenceUserFeedback: ");
             await rClient.ConferenceUserFeedback(TestData.ConferenceUserFeedback());
+
+            Debug.WriteLine("DominantSpeaker: ");
+            await rClient.DominantSpeaker(TestData.DominantSpeaker());
         }
     }
 }

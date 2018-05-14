@@ -112,6 +112,7 @@
     <Compile Include="Request\ConferenceUserFeedbackData.cs" />
     <Compile Include="Request\ConnectedOrActiveDevicesData.cs" />
     <Compile Include="Request\CreateConferenceData.cs" />
+    <Compile Include="Request\DominantSpeakerData.cs" />
     <Compile Include="Request\FabricActionData.cs" />
     <Compile Include="Request\FabricDroppedData.cs" />
     <Compile Include="Request\FabricSetupData.cs" />

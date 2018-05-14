@@ -358,6 +358,12 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/feedback"));
         }
 
+        public async Task DominantSpeaker(DominantSpeakerData dominantSpeakerData)
+        {
+            await SendRequest(dominantSpeakerData, UrlBuilder(Host.events.ToString(),
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/dominantspeaker"));
+        }
+
         private async Task SSRCMap(SSRCMapData ssrcMapData)
         {
             ssrcMapData.connectionID = _ucID;

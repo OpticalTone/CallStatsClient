@@ -779,5 +779,16 @@ namespace CallStatsClient
 
             return conferenceUserFeedbackData;
         }
+
+        public static DominantSpeakerData DominantSpeaker()
+        {
+            DominantSpeakerData dominantSpeakerData = new DominantSpeakerData();
+            dominantSpeakerData.localID = _localID;
+            dominantSpeakerData.originID = _originID;
+            dominantSpeakerData.deviceID = _deviceID;
+            dominantSpeakerData.timestamp = TimeStamp.Now();
+
+            return dominantSpeakerData;
+        }
     }
 }
