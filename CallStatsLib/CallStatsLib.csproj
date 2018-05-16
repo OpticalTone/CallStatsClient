@@ -141,7 +141,7 @@
     <Compile Include="Request\UserLeftData.cs" />
     <Compile Include="Response\AuthenticationResponse.cs" />
     <Compile Include="Response\ConferenceResponse.cs" />
-    <Compile Include="RestClient.cs" />
+    <Compile Include="CallStats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\CallStatsLib.rd.xml" />
   </ItemGroup>

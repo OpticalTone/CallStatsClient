@@ -31,107 +31,116 @@ namespace CallStatsClient
     {
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
             Config.AppSettings();
 
-            Task task = InitializeCallStats();
+            try
+            {
+                Task task = InitializeCallStats();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Error] InitializeCallStats, message: '{ex.Message}'");
+            }
         }
 
-        public async Task InitializeCallStats()
+        private async Task InitializeCallStats()
         {
             string localID = Config.localSettings.Values["localID"].ToString();
             string appID = Config.localSettings.Values["appID"].ToString();
             string keyID = Config.localSettings.Values["keyID"].ToString();
             string confID = Config.localSettings.Values["confID"].ToString();
 
-            ECDsa privateKey = new X509Certificate2("ecc-key.p12", Config.localSettings.Values["password"].ToString()).GetECDsaPrivateKey();
+            ECDsa privateKey = new X509Certificate2("ecc-key.p12", 
+                Config.localSettings.Values["password"].ToString()).GetECDsaPrivateKey();
 
-            RestClient rClient = new RestClient(localID, appID, keyID, confID, privateKey);
+            CallStats callstats = new CallStats(localID, appID, keyID, confID, privateKey);
 
-            await rClient.StepsToIntegrate(TestData.CreateConference(), 
-                                           TestData.UserAlive(), 
-                                           TestData.FabricSetup(),
-                                           TestData.FabricSetupFailed(), 
-                                           TestData.SSRCMap(),
-                                           TestData.ConferenceStatsSubmission(),
-                                           TestData.FabricTerminated(),
-                                           TestData.UserLeft());
+            await callstats.StepsToIntegrate(
+                TestData.CreateConference(), 
+                TestData.UserAlive(), 
+                TestData.FabricSetup(),
+                TestData.FabricSetupFailed(), 
+                TestData.SSRCMap(),
+                TestData.ConferenceStatsSubmission(),
+                TestData.FabricTerminated(),
+                TestData.UserLeft());
 
             Debug.WriteLine("UserDetails: ");
-            await rClient.UserDetails(TestData.UserDetails());
+            await callstats.UserDetails(TestData.UserDetails());
 
             Debug.WriteLine("FabricStateChange: ");
-            await rClient.FabricStateChange(TestData.FabricStateChange());
+            await callstats.FabricStateChange(TestData.FabricStateChange());
 
             Debug.WriteLine("FabricTransportChange: ");
-            await rClient.FabricTransportChange(TestData.FabricTransportChange());
+            await callstats.FabricTransportChange(TestData.FabricTransportChange());
 
             Debug.WriteLine("FabricDropped: ");
-            await rClient.FabricDropped(TestData.FabricDropped());
+            await callstats.FabricDropped(TestData.FabricDropped());
 
             Debug.WriteLine("FabricAction: ");
-            await rClient.FabricAction(TestData.FabricAction());
+            await callstats.FabricAction(TestData.FabricAction());
 
             Debug.WriteLine("SystemStatusStatsSubmission: ");
-            await rClient.SystemStatusStatsSubmission(TestData.SystemStatusStatsSubmission());
+            await callstats.SystemStatusStatsSubmission(TestData.SystemStatusStatsSubmission());
 
             Debug.WriteLine("IceDisruptionStart: ");
-            await rClient.IceDisruptionStart(TestData.IceDisruptionStart());
+            await callstats.IceDisruptionStart(TestData.IceDisruptionStart());
 
             Debug.WriteLine("IceDisruptionEnd: ");
-            await rClient.IceDisruptionEnd(TestData.IceDisruptionEnd());
+            await callstats.IceDisruptionEnd(TestData.IceDisruptionEnd());
 
             Debug.WriteLine("IceRestart: ");
-            await rClient.IceRestart(TestData.IceRestart());
+            await callstats.IceRestart(TestData.IceRestart());
 
             Debug.WriteLine("IceFailed: ");
-            await rClient.IceFailed(TestData.IceFailed());
+            await callstats.IceFailed(TestData.IceFailed());
 
             Debug.WriteLine("IceAborted: ");
-            await rClient.IceAborted(TestData.IceAborted());
+            await callstats.IceAborted(TestData.IceAborted());
 
             Debug.WriteLine("IceTerminated: ");
-            await rClient.IceTerminated(TestData.IceTerminated());
+            await callstats.IceTerminated(TestData.IceTerminated());
 
             Debug.WriteLine("IceConnectionDisruptionStart: ");
-            await rClient.IceConnectionDisruptionStart(TestData.IceConnectionDisruptionStart());
+            await callstats.IceConnectionDisruptionStart(TestData.IceConnectionDisruptionStart());
 
             Debug.WriteLine("IceConnectionDisruptionEnd: ");
-            await rClient.IceConnectionDisruptionEnd(TestData.IceConnectionDisruptionEnd());
+            await callstats.IceConnectionDisruptionEnd(TestData.IceConnectionDisruptionEnd());
 
             Debug.WriteLine("MediaAction: ");
-            await rClient.MediaAction(TestData.MediaAction());
+            await callstats.MediaAction(TestData.MediaAction());
 
             Debug.WriteLine("MediaPlayback: ");
-            await rClient.MediaPlayback(TestData.MediaPlayback());
+            await callstats.MediaPlayback(TestData.MediaPlayback());
 
             Debug.WriteLine("ConnectedOrActiveDevices: ");
-            await rClient.ConnectedOrActiveDevices(TestData.ConnectedOrActiveDevices());
+            await callstats.ConnectedOrActiveDevices(TestData.ConnectedOrActiveDevices());
 
             Debug.WriteLine("ApplicationErrorLogs: ");
-            await rClient.ApplicationErrorLogs(TestData.ApplicationErrorLogs());
+            await callstats.ApplicationErrorLogs(TestData.ApplicationErrorLogs());
 
             Debug.WriteLine("ConferenceUserFeedback: ");
-            await rClient.ConferenceUserFeedback(TestData.ConferenceUserFeedback());
+            await callstats.ConferenceUserFeedback(TestData.ConferenceUserFeedback());
 
             Debug.WriteLine("DominantSpeaker: ");
-            await rClient.DominantSpeaker(TestData.DominantSpeaker());
+            await callstats.DominantSpeaker(TestData.DominantSpeaker());
 
             Debug.WriteLine("SDPEvent: ");
-            await rClient.SDPEvent(TestData.SDPEvent());
+            await callstats.SDPEvent(TestData.SDPEvent());
 
             Debug.WriteLine("BridgeStatistics: ");
-            await rClient.BridgeStatistics(TestData.BridgeStatistics());
+            await callstats.BridgeStatistics(TestData.BridgeStatistics());
 
             Debug.WriteLine("BridgeAlive: ");
-            await rClient.BridgeAlive(TestData.BridgeAlive());
+            await callstats.BridgeAlive(TestData.BridgeAlive());
 
             Timer timer = new Timer(30000);
             timer.Elapsed += async (sender, e) =>
             {
                 Debug.WriteLine("BridgeAlive: ");
-                await rClient.BridgeAlive(TestData.BridgeAlive());
+                await callstats.BridgeAlive(TestData.BridgeAlive());
             };
             timer.Start();
         }

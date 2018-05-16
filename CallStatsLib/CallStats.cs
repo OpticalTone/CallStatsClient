@@ -16,10 +16,11 @@ using System.Net;
 
 namespace CallStatsLib
 {
-    public class RestClient
+    public class CallStats
     {
         private static readonly HttpClient _client = new HttpClient();
-        private static string _domain = "callstats.io";
+
+        private const string _domain = "callstats.io";
         private enum Host { auth, events, stats }
 
         private string _localID;
@@ -37,7 +38,7 @@ namespace CallStatsLib
             return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
         })();
 
-        public RestClient(string localID, string appID, string keyID, string confID, ECDsa privateKey)
+        public CallStats(string localID, string appID, string keyID, string confID, ECDsa privateKey)
         {
             _localID = localID;
             _appID = appID;
@@ -155,7 +156,7 @@ namespace CallStatsLib
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/userdetails"));
         }
 
-        public async Task UserLeft(UserLeftData userLeftData)
+        private async Task UserLeft(UserLeftData userLeftData)
         {
             await SendRequest(userLeftData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/user/left"));
@@ -165,19 +166,19 @@ namespace CallStatsLib
 
         #region Fabric Events 
 
-        public async Task<Tuple<HttpStatusCode, string>> FabricSetup(FabricSetupData fabricSetupData)
+        private async Task<Tuple<HttpStatusCode, string>> FabricSetup(FabricSetupData fabricSetupData)
         {
             return await SendRequest(fabricSetupData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setup")); 
         }
 
-        public async Task<Tuple<HttpStatusCode, string>> FabricSetupFailed(FabricSetupFailedData fabricSetupFailedData)
+        private async Task<Tuple<HttpStatusCode, string>> FabricSetupFailed(FabricSetupFailedData fabricSetupFailedData)
         {
             return await SendRequest(fabricSetupFailedData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setupfailed"));
         }
 
-        public async Task FabricTerminated(FabricTerminatedData fabricTerminatedData)
+        private async Task FabricTerminated(FabricTerminatedData fabricTerminatedData)
         {
             await SendRequest(fabricTerminatedData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/terminated"));
@@ -211,7 +212,7 @@ namespace CallStatsLib
 
         #region Stats Submission
 
-        public async Task ConferenceStatsSubmission(ConferenceStatsSubmissionData conferenceStatsSubmissionData)
+        private async Task ConferenceStatsSubmission(ConferenceStatsSubmissionData conferenceStatsSubmissionData)
         {
             await SendRequest(conferenceStatsSubmissionData, UrlBuilder(Host.stats.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/stats"));
