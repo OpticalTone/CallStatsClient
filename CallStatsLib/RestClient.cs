@@ -167,8 +167,6 @@ namespace CallStatsLib
 
         public async Task<Tuple<HttpStatusCode, string>> FabricSetup(FabricSetupData fabricSetupData)
         {
-            fabricSetupData.connectionID = _ucID;
-
             return await SendRequest(fabricSetupData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setup")); 
         }
@@ -181,40 +179,30 @@ namespace CallStatsLib
 
         public async Task FabricTerminated(FabricTerminatedData fabricTerminatedData)
         {
-            fabricTerminatedData.connectionID = _ucID;
-
             await SendRequest(fabricTerminatedData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/terminated"));
         }
 
         public async Task FabricStateChange(FabricStateChangeData fabricStateChangeData)
         {
-            fabricStateChangeData.connectionID = _ucID;
-
             await SendRequest(fabricStateChangeData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/statechange"));
         }
 
         public async Task FabricTransportChange(FabricTransportChangeData fabricTransportChangeData)
         {
-            fabricTransportChangeData.connectionID = _ucID;
-
             await SendRequest(fabricTransportChangeData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/transportchange"));
         }
 
         public async Task FabricDropped(FabricDroppedData fabricDroppedData)
         {
-            fabricDroppedData.connectionID = _ucID;
-
             await SendRequest(fabricDroppedData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/status"));
         }
 
         public async Task FabricAction(FabricActionData fabricActionData)
         {
-            fabricActionData.connectionID = _ucID;
-
             await SendRequest(fabricActionData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/actions"));
         }
@@ -225,8 +213,6 @@ namespace CallStatsLib
 
         public async Task ConferenceStatsSubmission(ConferenceStatsSubmissionData conferenceStatsSubmissionData)
         {
-            conferenceStatsSubmissionData.connectionID = _ucID;
-
             await SendRequest(conferenceStatsSubmissionData, UrlBuilder(Host.stats.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/stats"));
         }
@@ -243,64 +229,48 @@ namespace CallStatsLib
 
         public async Task IceDisruptionStart(IceDisruptionStartData iceDisruptionStartData)
         {
-            iceDisruptionStartData.connectionID = _ucID;
-
             await SendRequest(iceDisruptionStartData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceDisruptionEnd(IceDisruptionEndData iceDisruptionEndData)
         {
-            iceDisruptionEndData.connectionID = _ucID;
-
             await SendRequest(iceDisruptionEndData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceRestart(IceRestartData iceRestartData)
         {
-            iceRestartData.connectionID = _ucID;
-
             await SendRequest(iceRestartData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceFailed(IceFailedData iceFailedData)
         {
-            iceFailedData.connectionID = _ucID;
-
             await SendRequest(iceFailedData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceAborted(IceAbortedData iceAbortedData)
         {
-            iceAbortedData.connectionID = _ucID;
-
             await SendRequest(iceAbortedData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceTerminated(IceTerminatedData iceTerminatedData)
         {
-            iceTerminatedData.connectionID = _ucID;
-
             await SendRequest(iceTerminatedData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceConnectionDisruptionStart(IceConnectionDisruptionStartData iceConnectionDisruptionStartData)
         {
-            iceConnectionDisruptionStartData.connectionID = _ucID;
-
             await SendRequest(iceConnectionDisruptionStartData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceConnectionDisruptionEnd(IceConnectionDisruptionEndData iceConnectionDisruptionEndData)
         {
-            iceConnectionDisruptionEndData.connectionID = _ucID;
-
             await SendRequest(iceConnectionDisruptionEndData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
@@ -311,16 +281,12 @@ namespace CallStatsLib
 
         public async Task MediaAction(MediaActionData mediaActionData)
         {
-            mediaActionData.connectionID = _ucID;
-
             await SendRequest(mediaActionData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/media/actions"));
         }
 
         public async Task MediaPlayback(MediaPlaybackData mediaPlaybackData)
         {
-            mediaPlaybackData.connectionID = _ucID;
-
             await SendRequest(mediaPlaybackData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/media/pipeline"));
         }
@@ -341,8 +307,6 @@ namespace CallStatsLib
 
         public async Task ApplicationErrorLogs(ApplicationErrorLogsData applicationErrorLogsData)
         {
-            applicationErrorLogsData.connectionID = _ucID;
-
             await SendRequest(applicationErrorLogsData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/app/logs"));
         }
@@ -361,16 +325,12 @@ namespace CallStatsLib
 
         private async Task SSRCMap(SSRCMapData ssrcMapData)
         {
-            ssrcMapData.connectionID = _ucID;
-
             await SendRequest(ssrcMapData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ssrcmap"));
         }
 
         public async Task SDPEvent(SDPEventData sdpEventData)
         {
-            sdpEventData.connectionID = _ucID;
-
             await SendRequest(sdpEventData, UrlBuilder(Host.events.ToString(), 
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/sdp"));
         }

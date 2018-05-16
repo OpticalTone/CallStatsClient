@@ -95,6 +95,7 @@ namespace CallStatsClient
             fabricSetupData.originID = _originID; 
             fabricSetupData.deviceID = _deviceID;
             fabricSetupData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            fabricSetupData.connectionID = "connectionID";
             fabricSetupData.remoteID = "remoteID";
             fabricSetupData.delay = 0;
             fabricSetupData.iceGatheringDelay = 0;
@@ -158,6 +159,7 @@ namespace CallStatsClient
             ssrcMapData.originID = _originID;
             ssrcMapData.deviceID = _deviceID;
             ssrcMapData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            ssrcMapData.connectionID = "connectionID";
             ssrcMapData.remoteID = "remoteID";
             ssrcMapData.ssrcData = ssrcDataList;
 
@@ -178,6 +180,7 @@ namespace CallStatsClient
             conferenceStatsSubmissionData.originID = _originID;
             conferenceStatsSubmissionData.deviceID = _deviceID;
             conferenceStatsSubmissionData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            conferenceStatsSubmissionData.connectionID = "connectionID";
             conferenceStatsSubmissionData.remoteID = "remoteID";
             conferenceStatsSubmissionData.stats = statsList;
 
@@ -191,6 +194,7 @@ namespace CallStatsClient
             fabricTerminatedData.originID = _originID;
             fabricTerminatedData.deviceID = _deviceID;
             fabricTerminatedData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            fabricTerminatedData.connectionID = "connectionID";
             fabricTerminatedData.remoteID = "remoteID";
 
             return fabricTerminatedData;
@@ -228,6 +232,7 @@ namespace CallStatsClient
             fabricStateChangeData.originID = _originID;
             fabricStateChangeData.deviceID = _deviceID;
             fabricStateChangeData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            fabricStateChangeData.connectionID = "connectionID";
             fabricStateChangeData.remoteID = "remoteID";
             fabricStateChangeData.prevState = StateChange.stable.ToString();
             fabricStateChangeData.newState = StateChange.haveLocalOffer.ToString();
@@ -261,6 +266,7 @@ namespace CallStatsClient
             fabricTransportChangeData.originID = _originID;
             fabricTransportChangeData.deviceID = _deviceID;
             fabricTransportChangeData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            fabricTransportChangeData.connectionID = "connectionID";
             fabricTransportChangeData.remoteID = "remoteID";
             fabricTransportChangeData.currIceCandidatePair = currIceCandidatePairObj;
             fabricTransportChangeData.prevIceCandidatePair = prevIceCandidatePairObj;
@@ -287,6 +293,7 @@ namespace CallStatsClient
             fabricDroppedData.originID = _originID;
             fabricDroppedData.deviceID = _deviceID;
             fabricDroppedData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            fabricDroppedData.connectionID = "connectionID";
             fabricDroppedData.remoteID = "remoteID";
             fabricDroppedData.currIceCandidatePair = currIceCandidatePairObj;
             fabricDroppedData.currIceConnectionState = "failed";
@@ -306,6 +313,7 @@ namespace CallStatsClient
             fabricActionData.originID = _originID;
             fabricActionData.deviceID = _deviceID;
             fabricActionData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            fabricActionData.connectionID = "connectionID";
             fabricActionData.remoteID = "remoteID";
 
             return fabricActionData;
@@ -343,6 +351,7 @@ namespace CallStatsClient
             iceDisruptionStartData.originID = _originID;
             iceDisruptionStartData.deviceID = _deviceID;
             iceDisruptionStartData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            iceDisruptionStartData.connectionID = "connectionID";
             iceDisruptionStartData.remoteID = "remoteID";
             iceDisruptionStartData.currIceCandidatePair = currIceCandidatePairObj;
             iceDisruptionStartData.currIceConnectionState = "disconnected";
@@ -377,6 +386,7 @@ namespace CallStatsClient
             iceDisruptionEndData.originID = _originID;
             iceDisruptionEndData.deviceID = _deviceID;
             iceDisruptionEndData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            iceDisruptionEndData.connectionID = "connectionID";
             iceDisruptionEndData.remoteID = "remoteID";
             iceDisruptionEndData.currIceCandidatePair = currIceCandidatePairObj;
             iceDisruptionEndData.prevIceCandidatePair = prevIceCandidatePairObj;
@@ -405,6 +415,7 @@ namespace CallStatsClient
             iceRestartData.originID = _originID;
             iceRestartData.deviceID = _deviceID;
             iceRestartData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            iceRestartData.connectionID = "connectionID";
             iceRestartData.remoteID = "remoteID";
             iceRestartData.prevIceCandidatePair = prevIceCandidatePairObj;
             iceRestartData.currIceConnectionState = "new";
@@ -453,6 +464,7 @@ namespace CallStatsClient
             iceFailedData.originID = _originID;
             iceFailedData.deviceID = _deviceID;
             iceFailedData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            iceFailedData.connectionID = "connectionID";
             iceFailedData.remoteID = "remoteID";
             iceFailedData.localIceCandidates = localIceCandidatesList;
             iceFailedData.remoteIceCandidates = remoteIceCandidatesList;
@@ -504,6 +516,7 @@ namespace CallStatsClient
             iceAbortedData.originID = _originID;
             iceAbortedData.deviceID = _deviceID;
             iceAbortedData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            iceAbortedData.connectionID = "connectionID";
             iceAbortedData.remoteID = "remoteID";
             iceAbortedData.localIceCandidates = localIceCandidatesList;
             iceAbortedData.remoteIceCandidates = remoteIceCandidatesList;
@@ -533,6 +546,7 @@ namespace CallStatsClient
             iceTerminatedData.originID = _originID;
             iceTerminatedData.deviceID = _deviceID;
             iceTerminatedData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            iceTerminatedData.connectionID = "connectionID";
             iceTerminatedData.remoteID = "remoteID";
             iceTerminatedData.prevIceCandidatePair = iceCandidatePairObj;
             iceTerminatedData.currIceConnectionState = "closed";
@@ -549,6 +563,7 @@ namespace CallStatsClient
             iceConnectionDisruptionStartData.originID = _originID;
             iceConnectionDisruptionStartData.deviceID = _deviceID;
             iceConnectionDisruptionStartData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            iceConnectionDisruptionStartData.connectionID = "connectionID";
             iceConnectionDisruptionStartData.remoteID = "remoteID";
             iceConnectionDisruptionStartData.currIceConnectionState = "disconnected";
             iceConnectionDisruptionStartData.prevIceConnectionState = "checking";
@@ -564,6 +579,7 @@ namespace CallStatsClient
             iceConnectionDisruptionEndData.originID = _originID;
             iceConnectionDisruptionEndData.deviceID = _deviceID;
             iceConnectionDisruptionEndData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            iceConnectionDisruptionEndData.connectionID = "connectionID";
             iceConnectionDisruptionEndData.remoteID = "remoteID";
             iceConnectionDisruptionEndData.currIceConnectionState = "checking";
             iceConnectionDisruptionEndData.prevIceConnectionState = "disconnected";
@@ -588,7 +604,8 @@ namespace CallStatsClient
             mediaActionData.localID = _localID;
             mediaActionData.originID = _originID;
             mediaActionData.deviceID = _deviceID;
-            mediaActionData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();;
+            mediaActionData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            mediaActionData.connectionID = "connectionID";
             mediaActionData.remoteID = "remoteID";
             mediaActionData.ssrc = "11";
             mediaActionData.mediaDeviceID = "mediaDeviceID";
@@ -611,7 +628,8 @@ namespace CallStatsClient
             mediaPlaybackData.localID = _localID;
             mediaPlaybackData.originID = _originID;
             mediaPlaybackData.deviceID = _deviceID;
-            mediaPlaybackData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();;
+            mediaPlaybackData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            mediaPlaybackData.connectionID = "connectionID";
             mediaPlaybackData.remoteID = "remoteID";    // Documentation: This field is not in docs, also connectionID
             mediaPlaybackData.mediaType = MediaPlaybackMediaType.audio.ToString();
             mediaPlaybackData.ssrc = "11";
@@ -637,7 +655,7 @@ namespace CallStatsClient
             connectedOrActiveDevicesData.localID = _localID;
             connectedOrActiveDevicesData.originID = _originID;
             connectedOrActiveDevicesData.deviceID = _deviceID;
-            connectedOrActiveDevicesData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();;
+            connectedOrActiveDevicesData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
             connectedOrActiveDevicesData.mediaDeviceList = mediaDeviceList;
             connectedOrActiveDevicesData.eventType = ConnectedOrActiveDevicesEventType.activeDeviceList.ToString();
 
@@ -654,7 +672,8 @@ namespace CallStatsClient
             applicationErrorLogsData.localID = _localID;
             applicationErrorLogsData.originID = _originID;
             applicationErrorLogsData.deviceID = _deviceID;
-            applicationErrorLogsData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();;
+            applicationErrorLogsData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            applicationErrorLogsData.connectionID = "connectionID";
             applicationErrorLogsData.level = ErrorLogsLevel.debug.ToString();
             applicationErrorLogsData.message = "Application error message";
             applicationErrorLogsData.messageType = ErrorLogsMessageType.json.ToString();
@@ -674,7 +693,7 @@ namespace CallStatsClient
             conferenceUserFeedbackData.localID = _localID;
             conferenceUserFeedbackData.originID = _originID;
             conferenceUserFeedbackData.deviceID = _deviceID;
-            conferenceUserFeedbackData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();;
+            conferenceUserFeedbackData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
             conferenceUserFeedbackData.remoteID = "remoteID";
             conferenceUserFeedbackData.feedback = feedbackObj;
 
@@ -687,7 +706,7 @@ namespace CallStatsClient
             dominantSpeakerData.localID = _localID;
             dominantSpeakerData.originID = _originID;
             dominantSpeakerData.deviceID = _deviceID;
-            dominantSpeakerData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();;
+            dominantSpeakerData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
 
             return dominantSpeakerData;
         }
@@ -698,7 +717,8 @@ namespace CallStatsClient
             sdpEventData.localID = _localID;
             sdpEventData.originID = _originID;
             sdpEventData.deviceID = _deviceID;
-            sdpEventData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();;
+            sdpEventData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
+            sdpEventData.connectionID = "connectionID";
             sdpEventData.remoteID = "remoteID";
             sdpEventData.localSDP = "Stringified SDP of the local user";
             sdpEventData.remoteID = "Stringified SDP of the remote user";
@@ -712,7 +732,7 @@ namespace CallStatsClient
             bridgeStatisticsData.localID = _localID;
             bridgeStatisticsData.originID = _originID;
             bridgeStatisticsData.deviceID = _deviceID;
-            bridgeStatisticsData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();;
+            bridgeStatisticsData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
             bridgeStatisticsData.cpuUsage = 0;
             bridgeStatisticsData.batteryLevel = 0;
             bridgeStatisticsData.memoryUsage = 0;
@@ -740,7 +760,7 @@ namespace CallStatsClient
             bridgeAliveData.localID = _localID;
             bridgeAliveData.originID = _originID;
             bridgeAliveData.deviceID = _deviceID;
-            bridgeAliveData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();;
+            bridgeAliveData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
 
             return bridgeAliveData;
         }
