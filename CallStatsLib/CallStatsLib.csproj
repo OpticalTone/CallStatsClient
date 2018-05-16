@@ -143,7 +143,6 @@
     <Compile Include="Response\ConferenceResponse.cs" />
     <Compile Include="RestClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TimeStamp.cs" />
     <EmbeddedResource Include="Properties\CallStatsLib.rd.xml" />
   </ItemGroup>
   <ItemGroup>

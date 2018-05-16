@@ -124,9 +124,9 @@ namespace CallStatsLib
                 { "userID", _localID },
                 { "appID", _appID },
                 { "keyID", _keyID },
-                { "iat", TimeStamp.Now() },
-                { "nbf", TimeStamp.Now() },
-                { "exp", TimeStamp.ExpireInHours(1) },
+                { "iat", DateTime.UtcNow.ToUnixTimeStamp() },
+                { "nbf", DateTime.UtcNow.AddMinutes(-5).ToUnixTimeStamp() },
+                { "exp", DateTime.UtcNow.AddHours(1).ToUnixTimeStamp() },
                 { "jti", _jti }
             };
 
@@ -432,6 +432,22 @@ namespace CallStatsLib
         private string UrlBuilder(string host, string endpoint)
         {
             return $"https://{host}.{_domain}{endpoint}";
+        }
+    }
+
+    public static class DateTimeExtensions
+    {
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        /// <summary>
+        /// Convert from .NET DateTime to UnixTimeStamp.
+        /// (FYI in -> https://msdn.microsoft.com/en-us/library/system.datetimeoffset.tounixtimeseconds.aspx)
+        /// </summary>
+        /// <param name="dateTimeUtc">DateTimeUtc</param>
+        /// <returns>Unix TimeStamp</returns>
+        public static long ToUnixTimeStamp(this DateTime dateTimeUtc)
+        {
+            return (long)Math.Round((dateTimeUtc.ToUniversalTime() - UnixEpoch).TotalSeconds);
         }
     }
 }
