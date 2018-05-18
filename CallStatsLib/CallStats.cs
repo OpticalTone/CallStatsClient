@@ -47,6 +47,11 @@ namespace CallStatsLib
             _privateKey = privateKey;
         }
 
+        private string UrlBuilder(string host, string endpoint)
+        {
+            return $"https://{host}.{_domain}{endpoint}";
+        }
+
         public async Task StepsToIntegrate(CreateConferenceData createConferenceData, UserAliveData userAliveData, 
             FabricSetupData fabricSetupData, FabricSetupFailedData fabricSetupFailedData, 
             SSRCMapData ssrcMapData, ConferenceStatsSubmissionData conferenceStatsSubmissionData,
@@ -354,45 +359,33 @@ namespace CallStatsLib
 
         #endregion
 
-        private async Task<Tuple<HttpStatusCode, string>> SendRequest(object data, string url)
-        {
-            string dataContent = JsonConvert.SerializeObject(data);
-
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, url);
-            req.Version = new Version(2, 0);
-
-            byte[] buffer = Encoding.UTF8.GetBytes(dataContent);
-            ByteArrayContent byteContent = new ByteArrayContent(buffer);
-
-            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            req.Content = byteContent;
-
-            HttpResponseMessage res = await _client.SendAsync(req);
-
-            HttpStatusCode statusCode = res.StatusCode;
-
-            if (statusCode != HttpStatusCode.OK)
-            {
-                Debug.WriteLine($"[Error] Http response status code: {statusCode}");
-            }
-
-            string content = await res.Content.ReadAsStringAsync();
-
-            Debug.WriteLine(content);
-            Debug.WriteLine(string.Empty);
-
-            return Tuple.Create(statusCode, content);
-        }
-
         private T DeserializeJson<T>(string json)
         {
             return JsonConvert.DeserializeObject<T>(json);
         }
 
-        private string UrlBuilder(string host, string endpoint)
+        private async Task<Tuple<HttpStatusCode, string>> SendRequest(object data, string url)
         {
-            return $"https://{host}.{_domain}{endpoint}";
+            ByteArrayContent byteContent = 
+                new ByteArrayContent(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
+
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, url);
+            req.Version = new Version(2, 0);
+            req.Content = byteContent;
+
+            HttpResponseMessage res = await _client.SendAsync(req);
+
+            HttpStatusCode statusCode = res.StatusCode;
+            string content = await res.Content.ReadAsStringAsync();
+
+            if (statusCode != HttpStatusCode.OK)
+                Debug.WriteLine($"[Error] Http response status code: {statusCode}");
+
+            Debug.WriteLine(content); Debug.WriteLine(string.Empty);
+
+            return Tuple.Create(statusCode, content);
         }
     }
 
@@ -400,12 +393,6 @@ namespace CallStatsLib
     {
         private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        /// <summary>
-        /// Convert from .NET DateTime to UnixTimeStamp.
-        /// (FYI in -> https://msdn.microsoft.com/en-us/library/system.datetimeoffset.tounixtimeseconds.aspx)
-        /// </summary>
-        /// <param name="dateTimeUtc">DateTimeUtc</param>
-        /// <returns>Unix TimeStamp</returns>
         public static long ToUnixTimeStamp(this DateTime dateTimeUtc)
         {
             return (long)Math.Round((dateTimeUtc.ToUniversalTime() - UnixEpoch).TotalSeconds);
