@@ -321,7 +321,7 @@ namespace CallStatsClient
             return fabricActionData;
         }
 
-        public static SystemStatusStatsSubmissionData SystemStatusStatsSubmission() // Documentation: statusCode: MethodNotAllowed
+        public static SystemStatusStatsSubmissionData SystemStatusStatsSubmission() 
         {
             SystemStatusStatsSubmissionData systemStatusStatsSubmissionData = new SystemStatusStatsSubmissionData();
             systemStatusStatsSubmissionData.localID = _localID;
@@ -431,24 +431,24 @@ namespace CallStatsClient
         public static IceFailedData IceFailed()
         {
             List<IceCandidate> localIceCandidatesList = new List<IceCandidate>();
-            IceCandidate localIceCandidatesObj = new IceCandidate();
-            localIceCandidatesObj.id = "1";
-            localIceCandidatesObj.type = LocalIceCandidateType.localcandidate.ToString();
-            localIceCandidatesObj.ip = "127.0.0.1";
-            localIceCandidatesObj.port = 8888;
-            localIceCandidatesObj.candidateType = IceCandidateType.host.ToString();
-            localIceCandidatesObj.transport = IceCandidateTransport.tcp.ToString();
-            localIceCandidatesList.Add(localIceCandidatesObj);
+            IceCandidate localIceCandidateObj = new IceCandidate();
+            localIceCandidateObj.id = "1";
+            localIceCandidateObj.type = LocalIceCandidateType.localcandidate.ToString();
+            localIceCandidateObj.ip = "127.0.0.1";
+            localIceCandidateObj.port = 8888;
+            localIceCandidateObj.candidateType = IceCandidateType.host.ToString();
+            localIceCandidateObj.transport = IceCandidateTransport.tcp.ToString();
+            localIceCandidatesList.Add(localIceCandidateObj);
 
             List<IceCandidate> remoteIceCandidatesList = new List<IceCandidate>();
-            IceCandidate remoteIceCandidatesObj = new IceCandidate();
-            remoteIceCandidatesObj.id = "2";
-            remoteIceCandidatesObj.type = LocalIceCandidateType.localcandidate.ToString(); // Documentation: RemoteIceCandidateType.remotecandidate.ToString(); 
-            remoteIceCandidatesObj.ip = "127.0.0.2";
-            remoteIceCandidatesObj.port = 8888;
-            remoteIceCandidatesObj.candidateType = IceCandidateType.host.ToString();
-            remoteIceCandidatesObj.transport = IceCandidateTransport.tcp.ToString();
-            localIceCandidatesList.Add(remoteIceCandidatesObj);
+            IceCandidate remoteIceCandidateObj = new IceCandidate();
+            remoteIceCandidateObj.id = "2";
+            remoteIceCandidateObj.type = RemoteIceCandidateType.remotecandidate.ToString();  
+            remoteIceCandidateObj.ip = "127.0.0.2";
+            remoteIceCandidateObj.port = 8888;
+            remoteIceCandidateObj.candidateType = IceCandidateType.host.ToString();
+            remoteIceCandidateObj.transport = IceCandidateTransport.tcp.ToString();
+            remoteIceCandidatesList.Add(remoteIceCandidateObj);
 
             List<IceCandidatePair> iceCandidatePairsList = new List<IceCandidatePair>();
             IceCandidatePair iceCandidatePairObj = new IceCandidatePair();
@@ -478,29 +478,27 @@ namespace CallStatsClient
             return iceFailedData;
         }
 
-        private enum IceAbortedConnectionState { checking, disconnected }  // Documentation: wrong option "new"
-
         public static IceAbortedData IceAborted()
         {
             List<IceCandidate> localIceCandidatesList = new List<IceCandidate>();
-            IceCandidate localIceCandidatesObj = new IceCandidate();
-            localIceCandidatesObj.id = "1";
-            localIceCandidatesObj.type = LocalIceCandidateType.localcandidate.ToString();
-            localIceCandidatesObj.ip = "127.0.0.1";
-            localIceCandidatesObj.port = 8888;
-            localIceCandidatesObj.candidateType = IceCandidateType.host.ToString();
-            localIceCandidatesObj.transport = IceCandidateTransport.tcp.ToString();
-            localIceCandidatesList.Add(localIceCandidatesObj);
+            IceCandidate localIceCandidateObj = new IceCandidate();
+            localIceCandidateObj.id = "1";
+            localIceCandidateObj.type = LocalIceCandidateType.localcandidate.ToString();
+            localIceCandidateObj.ip = "127.0.0.1";
+            localIceCandidateObj.port = 8888;
+            localIceCandidateObj.candidateType = IceCandidateType.host.ToString();
+            localIceCandidateObj.transport = IceCandidateTransport.tcp.ToString();
+            localIceCandidatesList.Add(localIceCandidateObj);
 
             List<IceCandidate> remoteIceCandidatesList = new List<IceCandidate>();
-            IceCandidate remoteIceCandidatesObj = new IceCandidate();
-            remoteIceCandidatesObj.id = "2";
-            remoteIceCandidatesObj.type = LocalIceCandidateType.localcandidate.ToString(); // Documentation: RemoteIceCandidateType.remotecandidate.ToString();  
-            remoteIceCandidatesObj.ip = "127.0.0.2";
-            remoteIceCandidatesObj.port = 8888;
-            remoteIceCandidatesObj.candidateType = IceCandidateType.host.ToString();
-            remoteIceCandidatesObj.transport = IceCandidateTransport.tcp.ToString();
-            localIceCandidatesList.Add(remoteIceCandidatesObj);
+            IceCandidate remoteIceCandidateObj = new IceCandidate();
+            remoteIceCandidateObj.id = "2";
+            remoteIceCandidateObj.type = RemoteIceCandidateType.remotecandidate.ToString(); 
+            remoteIceCandidateObj.ip = "127.0.0.2";
+            remoteIceCandidateObj.port = 8888;
+            remoteIceCandidateObj.candidateType = IceCandidateType.host.ToString();
+            remoteIceCandidateObj.transport = IceCandidateTransport.tcp.ToString();
+            remoteIceCandidatesList.Add(remoteIceCandidateObj);
 
             List<IceCandidatePair> iceCandidatePairsList = new List<IceCandidatePair>();
             IceCandidatePair iceCandidatePairObj = new IceCandidatePair();
@@ -513,7 +511,7 @@ namespace CallStatsClient
             iceCandidatePairsList.Add(iceCandidatePairObj);
 
             IceAbortedData iceAbortedData = new IceAbortedData();
-            iceAbortedData.eventType = "iceFailed";
+            iceAbortedData.eventType = "iceAborted";
             iceAbortedData.localID = _localID;
             iceAbortedData.originID = _originID;
             iceAbortedData.deviceID = _deviceID;
@@ -523,8 +521,8 @@ namespace CallStatsClient
             iceAbortedData.localIceCandidates = localIceCandidatesList;
             iceAbortedData.remoteIceCandidates = remoteIceCandidatesList;
             iceAbortedData.iceCandidatePairs = iceCandidatePairsList;
-            iceAbortedData.currIceConnectionState = "failed"; // Documentation: "closed";
-            iceAbortedData.prevIceConnectionState = IceAbortedConnectionState.disconnected.ToString();
+            iceAbortedData.currIceConnectionState = "closed";
+            iceAbortedData.prevIceConnectionState = "disconnected";
             iceAbortedData.delay = 2;
 
             return iceAbortedData;
@@ -632,7 +630,7 @@ namespace CallStatsClient
             mediaPlaybackData.deviceID = _deviceID;
             mediaPlaybackData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
             mediaPlaybackData.connectionID = _connectionID;
-            mediaPlaybackData.remoteID = _remoteID;    // Documentation: This field is not in docs, also connectionID
+            mediaPlaybackData.remoteID = _remoteID;    
             mediaPlaybackData.mediaType = MediaPlaybackMediaType.audio.ToString();
             mediaPlaybackData.ssrc = "11";
 
