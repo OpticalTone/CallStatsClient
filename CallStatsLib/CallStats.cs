@@ -226,7 +226,7 @@ namespace CallStatsLib
         public async Task SystemStatusStatsSubmission(SystemStatusStatsSubmissionData systemStatusStatsSubmissionData)
         {
             await SendRequest(systemStatusStatsSubmissionData, UrlBuilder(Host.stats.ToString(), 
-                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/stats/system"));
+                $"/v1/apps/{_appID}/stats/system"));
         }
 
         #endregion

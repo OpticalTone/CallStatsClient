@@ -328,11 +328,11 @@ namespace CallStatsClient
             systemStatusStatsSubmissionData.originID = _originID;
             systemStatusStatsSubmissionData.deviceID = _deviceID;
             systemStatusStatsSubmissionData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
-            systemStatusStatsSubmissionData.cpuUsage = 5;
-            systemStatusStatsSubmissionData.batteryLevel = 50;
-            systemStatusStatsSubmissionData.memoryUsage = 2;
-            systemStatusStatsSubmissionData.totalMemory = 100;
-            systemStatusStatsSubmissionData.threadCount = 1;
+            systemStatusStatsSubmissionData.cpuLevel = 0;
+            systemStatusStatsSubmissionData.batteryLevel = 0;
+            systemStatusStatsSubmissionData.memoryUsage = 0;
+            systemStatusStatsSubmissionData.memoryAvailable = 0;
+            systemStatusStatsSubmissionData.threadCount = 0;
 
             return systemStatusStatsSubmissionData;
         }
