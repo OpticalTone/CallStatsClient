@@ -52,8 +52,11 @@ namespace CallStatsClient
             string keyID = Config.localSettings.Values["keyID"].ToString();
             string confID = Config.localSettings.Values["confID"].ToString();
 
-            ECDsa privateKey = new X509Certificate2("ecc-key.p12", 
-                Config.localSettings.Values["password"].ToString()).GetECDsaPrivateKey();
+            // Use this when you have private key and ecc-key.p12 file:
+            //ECDsa privateKey = new X509Certificate2("ecc-key.p12", 
+            //    Config.localSettings.Values["password"].ToString()).GetECDsaPrivateKey();
+
+            ECDsa privateKey = null;
 
             CallStats callstats = new CallStats(localID, appID, keyID, confID, privateKey);
 

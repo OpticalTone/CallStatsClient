@@ -136,7 +136,10 @@ namespace CallStatsLib
                 { "jti", _jti }
             };
 
-            return JWT.Encode(payload, _privateKey, JwsAlgorithm.ES256, extraHeaders: header);
+            // Use this when you have private key and ecc-key.p12 file:
+            // return JWT.Encode(payload, _privateKey, JwsAlgorithm.ES256, extraHeaders: header);
+
+            return string.Empty;
         }
 
         #endregion

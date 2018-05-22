@@ -328,11 +328,11 @@ namespace CallStatsClient
             systemStatusStatsSubmissionData.originID = _originID;
             systemStatusStatsSubmissionData.deviceID = _deviceID;
             systemStatusStatsSubmissionData.timestamp = DateTime.UtcNow.ToUnixTimeStamp();
-            systemStatusStatsSubmissionData.cpuLevel = 0;
-            systemStatusStatsSubmissionData.batteryLevel = 0;
-            systemStatusStatsSubmissionData.memoryUsage = 0;
-            systemStatusStatsSubmissionData.memoryAvailable = 0;
-            systemStatusStatsSubmissionData.threadCount = 0;
+            systemStatusStatsSubmissionData.cpuLevel = 1;
+            systemStatusStatsSubmissionData.batteryLevel = 1;
+            systemStatusStatsSubmissionData.memoryUsage = 1;
+            systemStatusStatsSubmissionData.memoryAvailable = 1;
+            systemStatusStatsSubmissionData.threadCount = 1;
 
             return systemStatusStatsSubmissionData;
         }
@@ -472,7 +472,7 @@ namespace CallStatsClient
             iceFailedData.remoteIceCandidates = remoteIceCandidatesList;
             iceFailedData.iceCandidatePairs = iceCandidatePairsList;
             iceFailedData.currIceConnectionState = "failed";
-            iceFailedData.prevIceConnectionState = IceFailedConnectionState.disconnected.ToString();
+            iceFailedData.prevIceConnectionState = IceFailedConnectionState.checking.ToString();
             iceFailedData.delay = 2;
 
             return iceFailedData;
@@ -522,7 +522,7 @@ namespace CallStatsClient
             iceAbortedData.remoteIceCandidates = remoteIceCandidatesList;
             iceAbortedData.iceCandidatePairs = iceCandidatePairsList;
             iceAbortedData.currIceConnectionState = "closed";
-            iceAbortedData.prevIceConnectionState = "disconnected";
+            iceAbortedData.prevIceConnectionState = "checking";
             iceAbortedData.delay = 2;
 
             return iceAbortedData;
