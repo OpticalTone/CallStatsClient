@@ -1,5 +1,4 @@
 ﻿using CallStatsLib;
-using CallStatsLib.Request;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +6,6 @@ using System.Timers;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -19,6 +17,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Jose;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -29,6 +28,18 @@ namespace CallStatsClient
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private string _localID = (string)Config.localSettings.Values["localID"];
+        private string _appID = (string)Config.localSettings.Values["appID"];
+        private string _keyID = (string)Config.localSettings.Values["keyID"];
+
+        private static readonly string _jti = new Func<string>(() =>
+        {
+            Random random = new Random();
+            const string chars = "abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const int length = 10;
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+        })();
+
         public MainPage()
         {
             InitializeComponent();
@@ -45,20 +56,60 @@ namespace CallStatsClient
             }
         }
 
+        private string GenerateJWT()
+        {
+            var header = new Dictionary<string, object>()
+            {
+                { "typ", "JWT" },
+                { "alg", "ES256" }
+            };
+
+            var payload = new Dictionary<string, object>()
+            {
+                { "userID", _localID },
+                { "appID", _appID },
+                { "keyID", _keyID },
+                { "iat", DateTime.UtcNow.ToUnixTimeStamp() },
+                { "nbf", DateTime.UtcNow.AddMinutes(-5).ToUnixTimeStamp() },
+                { "exp", DateTime.UtcNow.AddHours(1).ToUnixTimeStamp() },
+                { "jti", _jti }
+            };
+
+            try
+            {
+                string eccKey = @"ecc-key.p12";
+                if (File.Exists(eccKey))
+                {
+                    if (new FileInfo(eccKey).Length != 0)
+                    {
+                        return JWT.Encode(payload, new X509Certificate2(eccKey,
+                            (string)Config.localSettings.Values["password"]).GetECDsaPrivateKey(),
+                            JwsAlgorithm.ES256, extraHeaders: header);
+                    }
+                    else
+                    {
+                        Debug.WriteLine("[Error] File is empty.");
+                        return string.Empty;
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine("[Error] File does not exist.");
+                    return string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Error] GenerateJWT: {ex.Message}");
+                return string.Empty;
+            }
+        }
+
         private async Task InitializeCallStats()
         {
-            string localID = Config.localSettings.Values["localID"].ToString();
-            string appID = Config.localSettings.Values["appID"].ToString();
-            string keyID = Config.localSettings.Values["keyID"].ToString();
             string confID = Config.localSettings.Values["confID"].ToString();
 
-            // Use this when you have private key and ecc-key.p12 file:
-            //ECDsa privateKey = new X509Certificate2("ecc-key.p12", 
-            //    Config.localSettings.Values["password"].ToString()).GetECDsaPrivateKey();
-
-            ECDsa privateKey = null;
-
-            CallStats callstats = new CallStats(localID, appID, keyID, confID, privateKey);
+            CallStats callstats = new CallStats(_localID, _appID, _keyID, confID, GenerateJWT());
 
             await callstats.StepsToIntegrate(
                 TestData.CreateConference(), 
@@ -146,6 +197,16 @@ namespace CallStatsClient
                 await callstats.BridgeAlive(TestData.BridgeAlive());
             };
             timer.Start();
+        }
+    }
+
+    public static class DateTimeExtensions
+    {
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        public static long ToUnixTimeStamp(this DateTime dateTimeUtc)
+        {
+            return (long)Math.Round((dateTimeUtc.ToUniversalTime() - UnixEpoch).TotalSeconds);
         }
     }
 }

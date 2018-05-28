@@ -6,11 +6,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Security.Cryptography;
-using Jose;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
-using System.Linq;
 using CallStatsLib.Request;
 using System.Net;
 
@@ -27,30 +24,21 @@ namespace CallStatsLib
         private string _appID;
         private string _keyID;
         private string _confID;
-        private ECDsa _privateKey; 
+        private string _token;
         private string _ucID;
 
-        private static readonly string _jti = new Func<string>(() => 
-        {
-            Random random = new Random();
-            const string chars = "abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const int length = 10;
-            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
-        })();
-
-        public CallStats(string localID, string appID, string keyID, string confID, ECDsa privateKey)
+        public CallStats(string localID, string appID, string keyID, string confID, string token)
         {
             _localID = localID;
             _appID = appID;
             _keyID = keyID;
             _confID = confID;
-            _privateKey = privateKey;
+            _token = token;
         }
 
-        private string UrlBuilder(string host, string endpoint)
-        {
-            return $"https://{host}.{_domain}{endpoint}";
-        }
+        private string UrlBuilder(string host, string endpoint) => $"https://{host}.{_domain}{endpoint}";
+
+        private T DeserializeJson<T>(string json) => JsonConvert.DeserializeObject<T>(json);
 
         public async Task StepsToIntegrate(CreateConferenceData createConferenceData, UserAliveData userAliveData, 
             FabricSetupData fabricSetupData, FabricSetupFailedData fabricSetupFailedData, 
@@ -103,7 +91,7 @@ namespace CallStatsLib
             var values = new Dictionary<string, string>
             {
                 { "grant_type", "authorization_code" },
-                { "code", GenerateJWT() },
+                { "code", _token },
                 { "client_id", _localID + "@" + _appID }
             };
 
@@ -115,31 +103,6 @@ namespace CallStatsLib
             HttpResponseMessage res = await _client.SendAsync(req);
 
             return await res.Content.ReadAsStringAsync();
-        }
-
-        private string GenerateJWT()
-        {
-            var header = new Dictionary<string, object>()
-            {
-                { "typ", "JWT" },
-                { "alg", "ES256" }
-            };
-
-            var payload = new Dictionary<string, object>()
-            {
-                { "userID", _localID },
-                { "appID", _appID },
-                { "keyID", _keyID },
-                { "iat", DateTime.UtcNow.ToUnixTimeStamp() },
-                { "nbf", DateTime.UtcNow.AddMinutes(-5).ToUnixTimeStamp() },
-                { "exp", DateTime.UtcNow.AddHours(1).ToUnixTimeStamp() },
-                { "jti", _jti }
-            };
-
-            // Use this when you have private key and ecc-key.p12 file:
-            // return JWT.Encode(payload, _privateKey, JwsAlgorithm.ES256, extraHeaders: header);
-
-            return string.Empty;
         }
 
         #endregion
@@ -362,11 +325,6 @@ namespace CallStatsLib
 
         #endregion
 
-        private T DeserializeJson<T>(string json)
-        {
-            return JsonConvert.DeserializeObject<T>(json);
-        }
-
         private async Task<Tuple<HttpStatusCode, string>> SendRequest(object data, string url)
         {
             ByteArrayContent byteContent = 
@@ -389,16 +347,6 @@ namespace CallStatsLib
             Debug.WriteLine(content); Debug.WriteLine(string.Empty);
 
             return Tuple.Create(statusCode, content);
-        }
-    }
-
-    public static class DateTimeExtensions
-    {
-        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
-        public static long ToUnixTimeStamp(this DateTime dateTimeUtc)
-        {
-            return (long)Math.Round((dateTimeUtc.ToUniversalTime() - UnixEpoch).TotalSeconds);
         }
     }
 }
