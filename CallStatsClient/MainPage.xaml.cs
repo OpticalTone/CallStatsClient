@@ -69,9 +69,9 @@ namespace CallStatsClient
                 { "userID", _localID },
                 { "appID", _appID },
                 { "keyID", _keyID },
-                { "iat", DateTime.UtcNow.ToUnixTimeStamp() },
-                { "nbf", DateTime.UtcNow.AddMinutes(-5).ToUnixTimeStamp() },
-                { "exp", DateTime.UtcNow.AddHours(1).ToUnixTimeStamp() },
+                { "iat", DateTime.UtcNow.ToUnixTimeStampSeconds() },
+                { "nbf", DateTime.UtcNow.AddMinutes(-5).ToUnixTimeStampSeconds() },
+                { "exp", DateTime.UtcNow.AddHours(1).ToUnixTimeStampSeconds() },
                 { "jti", _jti }
             };
 
@@ -204,9 +204,14 @@ namespace CallStatsClient
     {
         private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        public static long ToUnixTimeStamp(this DateTime dateTimeUtc)
+        public static long ToUnixTimeStampSeconds(this DateTime dateTimeUtc)
         {
             return (long)Math.Round((dateTimeUtc.ToUniversalTime() - UnixEpoch).TotalSeconds);
+        }
+
+        public static long ToUnixTimeStampMiliseconds(this DateTime dateTimeUtc)
+        {
+            return (long)Math.Round((dateTimeUtc.ToUniversalTime() - UnixEpoch).TotalMilliseconds);
         }
     }
 }
