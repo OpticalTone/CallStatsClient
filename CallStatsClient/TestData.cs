@@ -24,12 +24,12 @@ namespace CallStatsClient
             createConferenceData.timestamp = DateTime.UtcNow.ToUnixTimeStampMiliseconds();
 
             EndpointInfo endpointInfo = new EndpointInfo();
-            endpointInfo.type = EndpointInfoType.browser.ToString();
-            endpointInfo.os = "";
-            endpointInfo.osVersion = "";
+            endpointInfo.type = EndpointInfoType.native.ToString();
+            endpointInfo.os = "Windows";
+            endpointInfo.osVersion = "10";
             endpointInfo.buildName = "";
             endpointInfo.buildVersion = "";
-            endpointInfo.appVersion = "";
+            endpointInfo.appVersion = "1.0";
 
             createConferenceData.endpointInfo = endpointInfo;
 
@@ -99,9 +99,9 @@ namespace CallStatsClient
             fabricSetupData.timestamp = DateTime.UtcNow.ToUnixTimeStampMiliseconds();
             fabricSetupData.connectionID = _connectionID;
             fabricSetupData.remoteID = _remoteID;
-            fabricSetupData.delay = 0;
-            fabricSetupData.iceGatheringDelay = 0;
-            fabricSetupData.iceConnectivityDelay = 0;
+            fabricSetupData.delay = 2;
+            fabricSetupData.iceGatheringDelay = 2;
+            fabricSetupData.iceConnectivityDelay = 2;
             fabricSetupData.fabricTransmissionDirection = FabricTransmissionDirection.sendrecv.ToString();
             fabricSetupData.remoteEndpointType = RemoteEndpointType.peer.ToString();
             fabricSetupData.localIceCandidates = localIceCandidatesList;
@@ -149,7 +149,7 @@ namespace CallStatsClient
             ssrcData.streamType = StreamType.inbound.ToString();
             ssrcData.reportType = ReportType.local.ToString();
             ssrcData.mediaType = MediaType.audio.ToString();
-            ssrcData.userID = "userID";
+            ssrcData.userID = _localID;
             ssrcData.msid = "msid";
             ssrcData.mslabel = "mslabel";
             ssrcData.label = "label";
@@ -274,7 +274,7 @@ namespace CallStatsClient
             fabricTransportChangeData.prevIceCandidatePair = prevIceCandidatePairObj;
             fabricTransportChangeData.currIceConnectionState = ConnectionState.completed.ToString();
             fabricTransportChangeData.prevIceConnectionState = ConnectionState.connected.ToString();
-            fabricTransportChangeData.delay = 0;
+            fabricTransportChangeData.delay = 2;
             fabricTransportChangeData.relayType = RelayType.turnTls;
 
             return fabricTransportChangeData;
@@ -300,7 +300,7 @@ namespace CallStatsClient
             fabricDroppedData.currIceCandidatePair = currIceCandidatePairObj;
             fabricDroppedData.currIceConnectionState = "failed";
             fabricDroppedData.prevIceConnectionState = "disconnected";
-            fabricDroppedData.delay = 0;
+            fabricDroppedData.delay = 2;
 
             return fabricDroppedData;
         }
