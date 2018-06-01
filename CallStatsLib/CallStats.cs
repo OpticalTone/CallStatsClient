@@ -40,8 +40,8 @@ namespace CallStatsLib
 
         private T DeserializeJson<T>(string json) => JsonConvert.DeserializeObject<T>(json);
 
-        public async Task StepsToIntegrate(CreateConferenceData createConferenceData, UserAliveData userAliveData, 
-            FabricSetupData fabricSetupData, FabricSetupFailedData fabricSetupFailedData, 
+        public async Task StepsToIntegrate(CreateConferenceData createConferenceData, UserAliveData userAliveData,
+            FabricSetupData fabricSetupData, FabricSetupFailedData fabricSetupFailedData,
             SSRCMapData ssrcMapData, ConferenceStatsSubmissionData conferenceStatsSubmissionData,
             FabricTerminatedData fabricTerminatedData, UserLeftData userLeftData)
         {
@@ -95,7 +95,7 @@ namespace CallStatsLib
                 { "client_id", _localID + "@" + _appID }
             };
 
-            HttpRequestMessage req = 
+            HttpRequestMessage req =
                 new HttpRequestMessage(HttpMethod.Post, UrlBuilder(Host.auth.ToString(), "/authenticate"));
 
             req.Content = new FormUrlEncodedContent(values);
@@ -111,25 +111,25 @@ namespace CallStatsLib
 
         private async Task<Tuple<HttpStatusCode, string>> CreateConference(CreateConferenceData createConferenceData)
         {
-            return await SendRequest(createConferenceData, UrlBuilder(Host.events.ToString(), 
+            return await SendRequest(createConferenceData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}"));
         }
 
         private async Task UserAlive(UserAliveData userAliveData)
         {
-            await SendRequest(userAliveData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(userAliveData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/user/alive"));
         }
 
         public async Task UserDetails(UserDetailsData userDetailsData)
         {
-            await SendRequest(userDetailsData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(userDetailsData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/userdetails"));
         }
 
         private async Task UserLeft(UserLeftData userLeftData)
         {
-            await SendRequest(userLeftData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(userLeftData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/user/left"));
         }
 
@@ -139,43 +139,43 @@ namespace CallStatsLib
 
         private async Task<Tuple<HttpStatusCode, string>> FabricSetup(FabricSetupData fabricSetupData)
         {
-            return await SendRequest(fabricSetupData, UrlBuilder(Host.events.ToString(), 
-                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setup")); 
+            return await SendRequest(fabricSetupData, UrlBuilder(Host.events.ToString(),
+                $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setup"));
         }
 
         private async Task<Tuple<HttpStatusCode, string>> FabricSetupFailed(FabricSetupFailedData fabricSetupFailedData)
         {
-            return await SendRequest(fabricSetupFailedData, UrlBuilder(Host.events.ToString(), 
+            return await SendRequest(fabricSetupFailedData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/setupfailed"));
         }
 
         private async Task FabricTerminated(FabricTerminatedData fabricTerminatedData)
         {
-            await SendRequest(fabricTerminatedData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(fabricTerminatedData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/terminated"));
         }
 
         public async Task FabricStateChange(FabricStateChangeData fabricStateChangeData)
         {
-            await SendRequest(fabricStateChangeData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(fabricStateChangeData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/statechange"));
         }
 
         public async Task FabricTransportChange(FabricTransportChangeData fabricTransportChangeData)
         {
-            await SendRequest(fabricTransportChangeData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(fabricTransportChangeData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/transportchange"));
         }
 
         public async Task FabricDropped(FabricDroppedData fabricDroppedData)
         {
-            await SendRequest(fabricDroppedData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(fabricDroppedData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/status"));
         }
 
         public async Task FabricAction(FabricActionData fabricActionData)
         {
-            await SendRequest(fabricActionData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(fabricActionData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/fabric/actions"));
         }
 
@@ -185,13 +185,13 @@ namespace CallStatsLib
 
         private async Task ConferenceStatsSubmission(ConferenceStatsSubmissionData conferenceStatsSubmissionData)
         {
-            await SendRequest(conferenceStatsSubmissionData, UrlBuilder(Host.stats.ToString(), 
+            await SendRequest(conferenceStatsSubmissionData, UrlBuilder(Host.stats.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/stats"));
         }
 
         public async Task SystemStatusStatsSubmission(SystemStatusStatsSubmissionData systemStatusStatsSubmissionData)
         {
-            await SendRequest(systemStatusStatsSubmissionData, UrlBuilder(Host.stats.ToString(), 
+            await SendRequest(systemStatusStatsSubmissionData, UrlBuilder(Host.stats.ToString(),
                 $"/v1/apps/{_appID}/stats/system"));
         }
 
@@ -201,31 +201,31 @@ namespace CallStatsLib
 
         public async Task IceDisruptionStart(IceDisruptionStartData iceDisruptionStartData)
         {
-            await SendRequest(iceDisruptionStartData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(iceDisruptionStartData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceDisruptionEnd(IceDisruptionEndData iceDisruptionEndData)
         {
-            await SendRequest(iceDisruptionEndData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(iceDisruptionEndData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceRestart(IceRestartData iceRestartData)
         {
-            await SendRequest(iceRestartData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(iceRestartData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceFailed(IceFailedData iceFailedData)
         {
-            await SendRequest(iceFailedData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(iceFailedData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceAborted(IceAbortedData iceAbortedData)
         {
-            await SendRequest(iceAbortedData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(iceAbortedData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
@@ -237,13 +237,13 @@ namespace CallStatsLib
 
         public async Task IceConnectionDisruptionStart(IceConnectionDisruptionStartData iceConnectionDisruptionStartData)
         {
-            await SendRequest(iceConnectionDisruptionStartData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(iceConnectionDisruptionStartData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
         public async Task IceConnectionDisruptionEnd(IceConnectionDisruptionEndData iceConnectionDisruptionEndData)
         {
-            await SendRequest(iceConnectionDisruptionEndData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(iceConnectionDisruptionEndData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ice/status"));
         }
 
@@ -253,13 +253,13 @@ namespace CallStatsLib
 
         public async Task MediaAction(MediaActionData mediaActionData)
         {
-            await SendRequest(mediaActionData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(mediaActionData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/media/actions"));
         }
 
         public async Task MediaPlayback(MediaPlaybackData mediaPlaybackData)
         {
-            await SendRequest(mediaPlaybackData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(mediaPlaybackData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/media/pipeline"));
         }
 
@@ -269,7 +269,7 @@ namespace CallStatsLib
 
         public async Task ConnectedOrActiveDevices(ConnectedOrActiveDevicesData connectedOrActiveDevicesData)
         {
-            await SendRequest(connectedOrActiveDevicesData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(connectedOrActiveDevicesData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/devices/list"));
         }
 
@@ -279,13 +279,13 @@ namespace CallStatsLib
 
         public async Task ApplicationErrorLogs(ApplicationErrorLogsData applicationErrorLogsData)
         {
-            await SendRequest(applicationErrorLogsData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(applicationErrorLogsData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/app/logs"));
         }
 
         public async Task ConferenceUserFeedback(ConferenceUserFeedbackData conferenceUserFeedbackData)
         {
-            await SendRequest(conferenceUserFeedbackData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(conferenceUserFeedbackData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/feedback"));
         }
 
@@ -297,13 +297,13 @@ namespace CallStatsLib
 
         private async Task SSRCMap(SSRCMapData ssrcMapData)
         {
-            await SendRequest(ssrcMapData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(ssrcMapData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/ssrcmap"));
         }
 
         public async Task SDPEvent(SDPEventData sdpEventData)
         {
-            await SendRequest(sdpEventData, UrlBuilder(Host.events.ToString(), 
+            await SendRequest(sdpEventData, UrlBuilder(Host.events.ToString(),
                 $"/v1/apps/{_appID}/conferences/{_confID}/{_ucID}/events/sdp"));
         }
 
@@ -313,13 +313,13 @@ namespace CallStatsLib
 
         public async Task BridgeStatistics(BridgeStatisticsData bridgeStatisticsData)
         {
-            await SendRequest(bridgeStatisticsData, UrlBuilder(Host.stats.ToString(), 
+            await SendRequest(bridgeStatisticsData, UrlBuilder(Host.stats.ToString(),
                 $"/v1/apps/{_appID}/stats/bridge/status"));
         }
 
         public async Task BridgeAlive(BridgeAliveData bridgeAliveData)
         {
-            await SendRequest(bridgeAliveData, UrlBuilder(Host.stats.ToString(), 
+            await SendRequest(bridgeAliveData, UrlBuilder(Host.stats.ToString(),
                 $"/v1/apps/{_appID}/stats/bridge/alive"));
         }
 
@@ -327,7 +327,7 @@ namespace CallStatsLib
 
         private async Task<Tuple<HttpStatusCode, string>> SendRequest(object data, string url)
         {
-            ByteArrayContent byteContent = 
+            ByteArrayContent byteContent =
                 new ByteArrayContent(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
 
             byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
