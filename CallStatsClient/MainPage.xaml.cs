@@ -83,18 +83,18 @@ namespace CallStatsClient
                     if (new FileInfo(eccKey).Length != 0)
                     {
                         return JWT.Encode(payload, new X509Certificate2(eccKey,
-                            (string)Config.localSettings.Values["password"]).GetECDsaPrivateKey(),
+                            (string)Config.localSettings.Values["secret"]).GetECDsaPrivateKey(),
                             JwsAlgorithm.ES256, extraHeaders: header);
                     }
                     else
                     {
-                        Debug.WriteLine("[Error] File is empty.");
+                        Debug.WriteLine("[Error] Private key file is empty. Create .p12 certificate and copy to ecc-key.p12 file.");
                         return string.Empty;
                     }
                 }
                 else
                 {
-                    Debug.WriteLine("[Error] File does not exist.");
+                    Debug.WriteLine("[Error] ecc-key.p12 certificate file does not exist.");
                     return string.Empty;
                 }
             }

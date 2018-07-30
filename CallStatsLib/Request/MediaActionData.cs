@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CallStatsLib
+namespace CallStatsLib.Request
 {
     public class MediaActionData
     {

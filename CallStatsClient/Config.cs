@@ -18,8 +18,8 @@ namespace CallStatsClient
             int rndnum = rnd.Next();
             localSettings.Values["confID"] = rndnum.ToString();
 
-            // privateKey
-            localSettings.Values["password"] = "123";
+            // secret string
+            localSettings.Values["secret"] = "123";
         }
     }
 }
