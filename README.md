@@ -14,7 +14,7 @@
 
 ## Authentication steps:
 
-* Set App ID: copy from your application settings to CallStatsClient/Config.cs 
+* Set `App ID`: copy from your application settings to CallStatsClient/Config.cs 
 `localSettings.Values["appID"]`
 
 * Set `secret string` in CallStatsClient/Config.cs 
@@ -31,7 +31,7 @@
 
 * Copy public key to your application settings.
 
-* Set key id: copy from your application settings to CallStatsClient/Config.cs 
+* Set `key id`: copy from your application settings to CallStatsClient/Config.cs 
 `localSettings.Values["keyID"]` 
 
 * Create certificate: 
@@ -40,5 +40,5 @@
 * Create .p12 certificate, use `secret string` for password: 
 `openssl pkcs12 -export -out ecc-key.p12 -inkey privatekey.pem -in certificate.crt`
 
-* Copy .p12 certificate to CallStatsClient `ecc-key.p12` file
+* Copy content of .p12 certificate to CallStatsClient `ecc-key.p12` file
 
