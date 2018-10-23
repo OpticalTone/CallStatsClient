@@ -62,50 +62,6 @@ namespace CallStatsLib
 
         }
 
-        public async Task StepsToIntegrate(CreateConferenceData createConferenceData, UserAliveData userAliveData,
-            FabricSetupData fabricSetupData, FabricSetupFailedData fabricSetupFailedData,
-            SSRCMapData ssrcMapData, ConferenceStatsSubmissionData conferenceStatsSubmissionData,
-            FabricTerminatedData fabricTerminatedData, UserLeftData userLeftData)
-        {
-            string authContent = await Authentication();
-            string accessToken = DeserializeJson<AuthenticationResponse>(authContent).access_token;
-
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-
-            Debug.WriteLine("CreateConference: ");
-            var confContent = await CreateConference(createConferenceData);
-            _ucID = DeserializeJson<ConferenceResponse>(confContent.Item2).ucID;
-
-            Timer timer = new Timer(10000);
-            timer.Elapsed += async (sender, e) =>
-            {
-                Debug.WriteLine("UserAlive: ");
-                await UserAlive(userAliveData);
-            };
-            timer.Start();
-
-            Debug.WriteLine("FabricSetup: ");
-            var fabricStatus = await FabricSetup(fabricSetupData);
-
-            if (fabricStatus.Item1 != HttpStatusCode.OK)
-            {
-                Debug.WriteLine("FabricSetupFailed: ");
-                await FabricSetupFailed(fabricSetupFailedData);
-            }
-
-            Debug.WriteLine("SSRCMap: ");
-            await SSRCMap(ssrcMapData);
-
-            Debug.WriteLine("ConferenceStatsSubmission: ");
-            await ConferenceStatsSubmission(conferenceStatsSubmissionData);
-
-            Debug.WriteLine("FabricTerminated: ");
-            await FabricTerminated(fabricTerminatedData);
-
-            Debug.WriteLine("UserLeft: ");
-            await UserLeft(userLeftData);
-        }
-
         #region Authentication
 
         private async Task<string> Authentication()
