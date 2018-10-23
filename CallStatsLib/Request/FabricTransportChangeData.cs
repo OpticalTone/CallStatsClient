@@ -1,4 +1,6 @@
-﻿namespace CallStatsLib.Request
+﻿using System.Collections.Generic;
+
+namespace CallStatsLib.Request
 {
     public class FabricTransportChangeData
     {
@@ -8,6 +10,8 @@
         public long timestamp { get; set; }
         public string remoteID { get; set; }
         public string connectionID { get; set; }
+        public List<IceCandidate> localIceCandidates { get; set; }
+        public List<IceCandidate> remoteIceCandidates { get; set; }
         public IceCandidatePair currIceCandidatePair { get; set; }
         public IceCandidatePair prevIceCandidatePair { get; set; }
         public string currIceConnectionState { get; set; }
