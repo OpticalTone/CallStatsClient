@@ -40,5 +40,9 @@
 * Create .p12 certificate, use `secret string` for password: 
 `openssl pkcs12 -export -out ecc-key.p12 -inkey privatekey.pem -in certificate.crt`
 
-* Copy content of .p12 certificate to CallStatsClient `ecc-key.p12` file
-
+* Add .p12 certificate to UWP project: 
+> Open .appxmanifest Declarations tab     
+> Select Certificates and Add      
+> Add New: Store name: Root, Content: path to .p12 certificate      
+> When `ecc-key.p12` is in the project remove it from Declarations tab     
+    
