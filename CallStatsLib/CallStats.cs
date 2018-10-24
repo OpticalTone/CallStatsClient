@@ -312,9 +312,7 @@ namespace CallStatsLib
 
             string jsonFormatted = JValue.Parse(json).ToString(Formatting.Indented);
 
-            Debug.WriteLine($"!!!JSON : {jsonFormatted}");
-
-
+            Debug.WriteLine($"JSON : {jsonFormatted}");
 
             byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 

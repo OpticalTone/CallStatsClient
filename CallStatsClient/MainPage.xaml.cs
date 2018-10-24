@@ -111,15 +111,8 @@ namespace CallStatsClient
 
             CallStats callstats = new CallStats(_localID, _appID, _keyID, confID, GenerateJWT());
 
-            await callstats.StepsToIntegrate(
-                TestData.CreateConference(), 
-                TestData.UserAlive(), 
-                TestData.FabricSetup(),
-                TestData.FabricSetupFailed(), 
-                TestData.SSRCMap(),
-                TestData.ConferenceStatsSubmission(),
-                TestData.FabricTerminated(),
-                TestData.UserLeft());
+            Debug.WriteLine("StartCallStats: ");
+            await callstats.StartCallStats(TestData.CreateConference(), TestData.UserAlive());
 
             Debug.WriteLine("UserDetails: ");
             await callstats.UserDetails(TestData.UserDetails());

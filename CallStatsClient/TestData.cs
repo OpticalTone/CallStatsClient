@@ -170,12 +170,7 @@ namespace CallStatsClient
 
         public static ConferenceStatsSubmissionData ConferenceStatsSubmission()
         {
-            List<Stats> statsList = new List<Stats>();
-            Stats stats = new Stats();
-            stats.tracks = "track";
-            stats.candidatePairs = "3";
-            stats.timestamp = DateTime.UtcNow.ToUnixTimeStampMiliseconds();
-            statsList.Add(stats);
+            List<object> statsList = new List<object>();
 
             ConferenceStatsSubmissionData conferenceStatsSubmissionData = new ConferenceStatsSubmissionData();
             conferenceStatsSubmissionData.localID = _localID;
